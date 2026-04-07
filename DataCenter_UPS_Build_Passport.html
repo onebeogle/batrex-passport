@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BATReX UPS Build Passport — Data Center Release</title>
+<style>
+  :root {
+    --bg:#eef3f8;
+    --panel:#ffffff;
+    --panel2:#f7fafc;
+    --ink:#0a1425;
+    --muted:#58677e;
+    --line:#d9e2ed;
+    --navy:#0f1f3d;
+    --navy2:#142646;
+    --blue:#1556e8;
+    --blue2:#eaf2ff;
+    --green:#0a9a5d;
+    --green2:#e8f7ef;
+    --amber:#c77b0d;
+    --amber2:#fff4df;
+    --red:#d44b55;
+    --red2:#fbecef;
+    --shadow:0 20px 44px rgba(10,20,37,.08);
+    --radius:24px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:linear-gradient(180deg,#edf3f8 0%, #fafbfd 100%);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1520px;margin:0 auto;padding:18px 18px 40px}
+  .topbar{position:sticky;top:12px;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border:1px solid rgba(217,226,237,.85);border-radius:20px;padding:14px 18px;box-shadow:var(--shadow)}
+  .brand{display:flex;align-items:center;gap:16px;min-width:0}
+  .brand-logo-wrap{display:flex;align-items:center;justify-content:center;min-width:0;flex:0 0 auto;max-width:100%}
+  .brand-logo-img{height:46px;width:auto;max-width:min(48vw,240px);display:block;object-fit:contain}
+  .brand-logo-text{display:none;font-weight:900;font-size:24px;letter-spacing:-.04em;color:#0a1425;white-space:nowrap}
+  .brand-logo-wrap.logo-fallback .brand-logo-text{display:block}
+  .brand-text h1{margin:0;font-size:17px;line-height:1.1}
+  .brand-text p{margin:4px 0 0;font-size:12px;color:var(--muted)}
+  .nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;color:#384864}
+  .nav span.active{font-weight:900;color:var(--blue)}
+  .chips{display:flex;gap:10px;flex-wrap:wrap}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:999px;font-size:12px;font-weight:900;border:1px solid transparent}
+  .chip.blue{background:var(--blue2);color:var(--blue);border-color:#d7e5ff}
+  .chip.green{background:var(--green2);color:var(--green);border-color:#ccefd9}
+  .chip.amber{background:var(--amber2);color:var(--amber);border-color:#f0dfbd}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%}
+  .dot.green{background:var(--green)} .dot.blue{background:var(--blue)} .dot.amber{background:var(--amber)} .dot.red{background:var(--red)}
+
+  .hero{display:grid;grid-template-columns:1.28fr .92fr;gap:18px;margin-top:18px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .hero-main{padding:28px;background:linear-gradient(180deg,#fff,#f8fbff)}
+  .eyebrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .eyebrow .label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:900}
+  .hero-main h2{margin:16px 0 10px;font-size:44px;line-height:1.02;letter-spacing:-.05em}
+  .lead{margin:0;font-size:16px;line-height:1.72;color:#33435b;max-width:920px}
+  .metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-top:22px}
+  .metric{padding:16px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#f7fafc)}
+  .metric .k{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:900}
+  .metric .v{margin-top:8px;font-size:28px;font-weight:950;letter-spacing:-.04em}
+  .metric .s{margin-top:6px;font-size:12px;line-height:1.45;color:#5b6981}
+
+  .hero-side{padding:24px;background:linear-gradient(180deg,var(--navy),var(--navy2));color:#eef4ff;overflow:hidden;position:relative}
+  .hero-side:before{content:"";position:absolute;right:-90px;top:-70px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle, rgba(36,197,116,.22) 0%, rgba(36,197,116,0) 70%)}
+  .hero-side:after{content:"";position:absolute;left:-110px;bottom:-110px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle, rgba(21,86,232,.25) 0%, rgba(21,86,232,0) 70%)}
+  .side-head{position:relative;z-index:1;display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+  .side-head h3{margin:0;font-size:14px;letter-spacing:.07em;text-transform:uppercase;color:#b7c7e8}
+  .side-head .acct{font-size:12px;color:#d7e2fa;background:rgba(255,255,255,.08);padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.08)}
+  .score-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(176px,176px) 1fr;gap:22px;align-items:center;margin-top:16px}
+  .ring-wrap{width:176px;height:176px;min-width:176px;position:relative}
+  .ring{position:absolute;inset:0;width:176px;height:176px;border-radius:50%;background:conic-gradient(#23c274 0deg,#23c274 calc(var(--score)*3.6deg),rgba(255,255,255,.14) calc(var(--score)*3.6deg),rgba(255,255,255,.14) 360deg)}
+  .ring:after{content:"";position:absolute;top:15px;left:15px;width:146px;height:146px;border-radius:50%;background:#12213a;border:1px solid rgba(255,255,255,.08)}
+  .ring-inner{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
+  .ring-inner .big{font-size:40px;font-weight:950;letter-spacing:-.05em;line-height:1}
+  .ring-inner .tiny{margin-top:6px;font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:#b8c8e7;font-weight:900;line-height:1}
+  .release-title{font-size:44px;font-weight:950;letter-spacing:-.05em;line-height:1}
+  .release-sub{margin-top:10px;font-size:15px;line-height:1.68;color:#d3dcf2}
+  .side-metrics{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}
+  .side-metric{padding:14px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08)}
+  .side-metric .k{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#b7c7e8;font-weight:900}
+  .side-metric .v{margin-top:8px;font-size:18px;font-weight:950}
+  .side-metric .s{margin-top:5px;font-size:12px;line-height:1.45;color:#d4ddf2}
+
+  .grid2{display:grid;grid-template-columns:1.18fr .82fr;gap:18px;margin-top:18px}
+  .section{padding:24px}
+  .section h3{margin:0;font-size:26px;letter-spacing:-.04em}
+  .subhead{margin:8px 0 0;font-size:14px;line-height:1.66;color:#43526b}
+  .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px}
+  .toggles{display:flex;gap:8px;flex-wrap:wrap}
+  .toggle{padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#fff;color:#30405a;font-size:13px;font-weight:900;cursor:pointer}
+  .toggle.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:#45556e;font-weight:800}
+  .legend .item{display:flex;align-items:center;gap:6px}
+
+  .map-shell{margin-top:16px;padding:18px;border-radius:20px;border:1px solid var(--line);background:linear-gradient(180deg,#fcfdff,#f6f9fc)}
+  .series-header{display:grid;grid-template-columns:64px repeat(14,minmax(50px,1fr));gap:8px;align-items:stretch;margin-bottom:10px}
+  .series-label{padding:10px 6px;text-align:center;border-radius:12px;background:#eef4fb;border:1px solid #d9e4f1;color:#34445d}
+  .series-label .s{font-size:11px;font-weight:900;letter-spacing:.05em}
+  .series-label .f{margin-top:4px;font-size:14px;font-weight:950}
+  .map-row{display:grid;grid-template-columns:64px repeat(14,minmax(50px,1fr));gap:8px;align-items:stretch;margin-bottom:8px}
+  .row-label{display:flex;align-items:center;justify-content:center;border-radius:12px;background:#f0f4f8;border:1px solid var(--line);font-weight:950;color:#34445d;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+  .cell{min-height:92px;border-radius:16px;border:1px solid var(--line);background:#fff;padding:10px 8px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;cursor:pointer;box-shadow:0 2px 8px rgba(10,20,37,.03);transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease}
+  .cell:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(10,20,37,.09)}
+  .cell.selected{border-color:var(--blue);box-shadow:0 0 0 3px rgba(21,86,232,.12),0 16px 32px rgba(10,20,37,.12)}
+  .cell .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .cell .id{font-size:10px;font-weight:950;letter-spacing:.04em;color:#24344f}
+  .pin{min-width:10px;min-height:10px;border-radius:50%}
+  .cell .main{font-size:20px;font-weight:950;letter-spacing:-.04em;line-height:1}
+  .cell .sub{font-size:11px;line-height:1.35;color:#405069;font-weight:800}
+  .cell .foot{font-size:10px;color:#68778f;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+
+  .detail-card{padding:24px;background:linear-gradient(180deg,#fff,#fbfdff)}
+  .detail-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+  .detail-top h4{margin:0;font-size:26px;letter-spacing:-.04em}
+  .detail-top p{margin:6px 0 0;font-size:14px;line-height:1.6;color:#42516a}
+  .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+  .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+  .stat{padding:14px;border-radius:16px;border:1px solid var(--line);background:#fff}
+  .stat .k{font-size:12px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.05em}
+  .stat .v{margin-top:8px;font-size:22px;font-weight:950;letter-spacing:-.04em}
+  .stat .s{margin-top:4px;font-size:12px;color:#59687f;line-height:1.45}
+  .score-panel{margin-top:16px;padding:18px;border-radius:18px;background:linear-gradient(180deg,#101c32,#162644);color:#eef4ff;border:1px solid rgba(255,255,255,.08)}
+  .score-panel h5{margin:0 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:#b8c8e7}
+  .progress{height:12px;border-radius:999px;background:rgba(255,255,255,.14);overflow:hidden;margin:10px 0 8px}
+  .progress span{display:block;height:100%;background:linear-gradient(90deg,#18a464,#29d17c);border-radius:999px}
+  .formula{margin-top:14px;padding:14px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;line-height:1.8;color:#eef4ff;overflow:auto}
+  .explain{margin-top:12px;font-size:13px;line-height:1.7;color:#d4def2}
+
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+  .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px}
+  .card{padding:18px;border-radius:18px;border:1px solid var(--line);background:#fff}
+  .card .t{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:900}
+  .card .v{margin-top:8px;font-size:19px;font-weight:950;letter-spacing:-.03em}
+  .card .s{margin-top:6px;font-size:13px;line-height:1.56;color:#56647c}
+  .table-wrap{margin-top:16px;overflow:auto}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:14px 12px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:top}
+  th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  tbody tr:last-child td{border-bottom:none}
+  .good{color:var(--green);font-weight:950}
+
+  .strip{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;margin-top:18px}
+  .dark-panel{padding:24px;border-radius:var(--radius);background:linear-gradient(180deg,#0e1729,#14233f);color:#eef4ff;border:1px solid rgba(255,255,255,.08);box-shadow:0 26px 54px rgba(10,20,37,.18)}
+  .dark-panel h3{margin:0;font-size:26px;letter-spacing:-.04em}
+  .dark-panel p{margin:10px 0 0;color:#d6def0;font-size:14px;line-height:1.72}
+  .formula-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}
+  .formula-mini{padding:16px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08)}
+  .formula-mini .k{font-size:12px;color:#b9c8e8;text-transform:uppercase;letter-spacing:.05em;font-weight:900}
+  .formula-mini .v{margin-top:8px;font-size:24px;font-weight:950;letter-spacing:-.04em}
+  .formula-mini .s{margin-top:6px;font-size:12px;color:#d6def0;line-height:1.45}
+  .quote{margin-top:18px;padding:18px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-size:14px;line-height:1.8;color:#e1e9fb}
+
+  .light-panel{padding:24px;background:linear-gradient(180deg,#fff,#fbfdff)}
+  .reserve-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}
+  .reserve-card{padding:16px;border-radius:18px;border:1px solid var(--line);background:#fff}
+  .reserve-card .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+  .reserve-card .id{font-weight:950;letter-spacing:-.02em}
+  .reserve-card .score{font-weight:950;color:var(--green)}
+  .reserve-card .meta{margin-top:10px;font-size:13px;line-height:1.6;color:#55647c}
+  .reserve-card .tag{margin-top:10px;display:inline-flex;padding:6px 10px;border-radius:999px;background:#eef4fb;border:1px solid #d9e4f1;font-size:12px;font-weight:900;color:#34445d}
+
+  .lot-wrap{margin-top:16px;padding:18px;border-radius:20px;border:1px solid var(--line);background:linear-gradient(180deg,#fcfdff,#f6f9fc)}
+  .lot-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;margin-top:14px}
+  .lot-cell{min-height:90px;border-radius:16px;border:1px solid var(--line);padding:10px 8px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;box-shadow:0 2px 8px rgba(10,20,37,.03)}
+  .lot-cell .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .lot-cell .id{font-size:10px;font-weight:950;letter-spacing:.04em;color:#24344f}
+  .lot-cell .main{font-size:18px;font-weight:950;letter-spacing:-.04em;line-height:1}
+  .lot-cell .sub{font-size:11px;line-height:1.35;color:#405069;font-weight:800}
+  .lot-cell .foot{font-size:10px;color:#66758d;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+  .lot-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:#45556e;font-weight:800;margin-top:10px}
+  .lot-summ{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}
+  .lot-summ .box{padding:14px;border-radius:16px;border:1px solid var(--line);background:#fff}
+  .lot-summ .box .k{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:900}
+  .lot-summ .box .v{margin-top:8px;font-size:22px;font-weight:950;letter-spacing:-.04em}
+  .lot-summ .box .s{margin-top:4px;font-size:12px;line-height:1.45;color:#5b6981}
+
+  .footer{margin-top:22px;padding:18px 4px 4px;font-size:12px;line-height:1.65;color:#6a7890}
+
+  @media (max-width:1260px) {
+    .hero,.grid2,.row2,.strip{grid-template-columns:1fr}
+    .metrics,.cards,.formula-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .score-grid{grid-template-columns:1fr}
+    .ring-wrap{margin:0 auto}
+  }
+  @media (max-width:920px) {
+    .wrap{padding:12px 10px 28px}
+    .nav{display:none}
+    .brand{gap:12px;flex-wrap:nowrap}
+    .brand-logo-img{height:34px;max-width:min(44vw,180px)}
+    .brand-text h1{font-size:15px}
+    .brand-text p{font-size:11px}
+    .hero-main h2{font-size:34px}
+    .metrics,.cards,.formula-grid,.stats,.reserve-grid,.lot-summ{grid-template-columns:1fr}
+    .series-header,.map-row{grid-template-columns:52px repeat(14,minmax(38px,1fr));gap:6px}
+    .lot-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .cell{min-height:76px;padding:8px 6px}
+    .cell .main{font-size:16px}
+    th,td{padding:12px 8px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-logo-wrap">
+      <img class="brand-logo-img" src="data:image/png;base64,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" alt="BATReX logo" width="606" height="117" loading="eager" decoding="sync" onerror="this.style.display='none';this.parentNode.classList.add('logo-fallback');">
+      <span class="brand-logo-text" aria-hidden="true">BATReX</span>
+    </div>
+      <div class="brand-text">
+        <h1>BATReX UPS Build Passport</h1>
+        <p>Data-center release portal · cell-level traceability · locked matched build</p>
+      </div>
+    </div>
+    <div class="nav">
+      <span class="active">Release</span>
+      <span>Build Map</span>
+      <span>Source Lot</span>
+      <span>Reserve Rack</span>
+      <span>Certificate Pack</span>
+    </div>
+    <div class="chips">
+      <span class="chip blue">Data Center UPS OEM Account</span>
+      <span class="chip green"><span class="dot green"></span> Traceability complete</span>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="panel hero-main">
+      <div class="eyebrow">
+        <span class="chip green"><span class="dot green"></span> BuildFit A+</span>
+        <span class="chip blue">Release ID · DCUPS-48V-14S4P-APR26-07</span>
+        <span class="label">Qualified for stationary UPS / backup power integration</span>
+      </div>
+      <h2>Data-center UPS matched build locked and ready for release.</h2>
+      <p class="lead">This passport is built for a UPS manufacturer that needs one answer, not a spreadsheet of candidate cells. The build is already locked: 56 cells assigned to one 48V-class 14S4P configuration, 8 stage-compatible reserve cells held under the same release logic, and full cell-level traceability preserved from source lot to locked stage position.</p>
+      <div class="metrics">
+        <div class="metric">
+          <div class="k">Locked build</div>
+          <div class="v">14S4P</div>
+          <div class="s">56 installed cells released as one matched configuration for cabinet integration.</div>
+        </div>
+        <div class="metric">
+          <div class="k">Mean cell score</div>
+          <div class="v">95.5</div>
+          <div class="s">Weighted across capacity, impedance, self-discharge, thermal rise, and post-rest voltage alignment.</div>
+        </div>
+        <div class="metric">
+          <div class="k">Mean SOH</div>
+          <div class="v">94.9%</div>
+          <div class="s">Locked build average across all released cells in the final cohort.</div>
+        </div>
+        <div class="metric">
+          <div class="k">Reserve coverage</div>
+          <div class="v">8 cells</div>
+          <div class="s">Stage-compatible reserve rack preserved under the same chemistry and format lock.</div>
+        </div>
+        <div class="metric">
+          <div class="k">Use-case lock</div>
+          <div class="v">UPS only</div>
+          <div class="s">Released for stationary backup power and data-center UPS pathways with independent BMS integration.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel hero-side" style="--score:95.4">
+      <div class="side-head">
+        <div>
+          <h3>Build passport decision</h3>
+        </div>
+        <div class="acct">Procurement view</div>
+      </div>
+      <div class="score-grid">
+        <div class="ring-wrap">
+          <div class="ring"></div>
+          <div class="ring-inner">
+            <div class="big">95.4</div>
+            <div class="tiny">BuildFit</div>
+          </div>
+        </div>
+        <div>
+          <div class="release-title">Release approved</div>
+          <div class="release-sub">The lock engine selected one build rather than “good cells” in isolation. The release passes chemistry lock, format lock, stage-cohesion thresholds, reserve coverage, and passport completeness.</div>
+          <div style="margin-top:10px;font-size:13px;color:#d3def4;line-height:1.65;max-width:360px">The worst stage remains above the release floor, every stage has a reserve substitute, and the source lot remains visible to the manufacturer before purchase approval.</div>
+        </div>
+      </div>
+      <div class="side-metrics">
+        <div class="side-metric">
+          <div class="k">Worst stage</div>
+          <div class="v">S14 · 85.8</div>
+          <div class="s">Still above the release floor, with reserve continuity preserved.</div>
+        </div>
+        <div class="side-metric">
+          <div class="k">Max stage ΔV</div>
+          <div class="v">3.2 mV</div>
+          <div class="s">Build-level voltage spread after rest across the locked stages.</div>
+        </div>
+        <div class="side-metric">
+          <div class="k">Reserve mean</div>
+          <div class="v">96.0</div>
+          <div class="s">Average reserve score available for field swap continuity and receiving QA.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel section">
+      <h3>Locked build map</h3>
+      <p class="subhead">Each tile below is already assigned to the released build. Click any cell to inspect the exact measurements, its deviation from the stage centroid, and the reserve substitute held under the same release logic. Toggle layers to view the build through the scoring variables that matter to a UPS manufacturer.</p>
+      <div class="toolbar">
+        <div class="toggles">
+          <button class="toggle active" data-layer="optimal">Optimal build</button>
+          <button class="toggle" data-layer="score">Cell score</button>
+          <button class="toggle" data-layer="capacity">Capacity</button>
+          <button class="toggle" data-layer="resistance">Impedance</button>
+          <button class="toggle" data-layer="thermal">Thermal rise</button>
+          <button class="toggle" data-layer="voltage">Voltage</button>
+          <button class="toggle" data-layer="selfdischarge">Self-discharge</button>
+        </div>
+        <div class="legend">
+          <span class="item"><span class="dot green"></span> locked build cell</span>
+          <span class="item"><span class="dot blue"></span> reserve substitute linked</span>
+        </div>
+      </div>
+      <div class="map-shell">
+        <div class="series-header" id="seriesHeader"></div>
+        <div id="cellMap"></div>
+      </div>
+    </div>
+
+    <div class="panel detail-card">
+      <div class="detail-top">
+        <div>
+          <h4 id="detailTitle"></h4>
+          <p id="detailSubtitle"></p>
+        </div>
+        <div class="chip green" id="detailGrade"></div>
+      </div>
+      <div class="badge-row">
+        <span class="chip blue">NMC lock</span>
+        <span class="chip blue">21700 lock</span>
+        <span class="chip amber">48V-class UPS</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="k">SOH</div><div class="v" id="statSoh"></div><div class="s">Cell-level state of health inside the locked build.</div></div>
+        <div class="stat"><div class="k">Capacity</div><div class="v" id="statCap"></div><div class="s">Released capacity measurement against the cohort centroid.</div></div>
+        <div class="stat"><div class="k">Impedance</div><div class="v" id="statIr"></div><div class="s">Released internal-resistance result from AC impedance screening.</div></div>
+        <div class="stat"><div class="k">Thermal rise</div><div class="v" id="statTh"></div><div class="s">Measured under the locked pulse duty used for release.</div></div>
+        <div class="stat"><div class="k">Self-discharge</div><div class="v" id="statSd"></div><div class="s">Voltage-relaxation trend inside the release window.</div></div>
+        <div class="stat"><div class="k">Post-rest voltage</div><div class="v" id="statV"></div><div class="s">Stage-aligned voltage captured after rest before lock.</div></div>
+        <div class="stat"><div class="k">Voltage deviation</div><div class="v" id="statDV"></div><div class="s">Deviation versus the stage centroid after rest.</div></div>
+        <div class="stat"><div class="k">Reserve substitute</div><div class="v" id="statReserve"></div><div class="s">Closest reserve cell held under the same release logic.</div></div>
+      </div>
+      <div class="score-panel">
+        <h5>Cell score</h5>
+        <div style="font-size:34px;font-weight:950;letter-spacing:-.05em" id="cellScore"></div>
+        <div class="progress"><span id="cellScoreBar"></span></div>
+        <div class="formula">CellScore = 100 × (0.34·Ccap + 0.28·Cir + 0.14·Csd + 0.16·Cth + 0.08·Cv)
+Ccap = 1 − |ΔCapacity| / 0.025
+Cir  = 1 − |ΔImpedance| / 0.22
+Csd  = 1 − |ΔSelfDischarge| / 0.12
+Cth  = 1 − |ΔThermal| / 0.14
+Cv   = 1 − |ΔVoltage| / 2.5</div>
+        <div class="explain" id="cellReason"></div>
+        <div class="explain" id="stageInfo"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row2">
+    <div class="panel section">
+      <h3>Stage cohesion table</h3>
+      <p class="subhead">The UPS manufacturer buys one build, so stage behavior matters as much as individual-cell behavior. This table shows the locked dispersion inside each series stage, along with the reserve cell held nearest to that stage.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Stage</th>
+              <th>StageFit</th>
+              <th>ΔV</th>
+              <th>ΔIR</th>
+              <th>ΔThermal</th>
+              <th>ΔCapacity</th>
+              <th>Reserve</th>
+            </tr>
+          </thead>
+          <tbody id="stageTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel section">
+      <h3>Commercial release package</h3>
+      <p class="subhead">This build is sold as a locked, traceable UPS configuration rather than as loose cells. The package below is what a data-center UPS manufacturer can review before issuing a purchase approval.</p>
+      <div class="cards">
+        <div class="card">
+          <div class="t">Source lot</div>
+          <div class="v">LOT-NMC-21700-ATL-APR26-07</div>
+          <div class="s">72 screened cells from one chemistry-locked and format-locked source lot.</div>
+        </div>
+        <div class="card">
+          <div class="t">Passport completeness</div>
+          <div class="v">100%</div>
+          <div class="s">SOH, resistance profile, thermal profile, source tracking, timestamp, and equipment ID preserved across the release.</div>
+        </div>
+        <div class="card">
+          <div class="t">Integration mode</div>
+          <div class="v">Independent BMS</div>
+          <div class="s">Released for stationary UPS and backup-power integration pathways only.</div>
+        </div>
+        <div class="card">
+          <div class="t">Reserve continuity</div>
+          <div class="v">14/14 stages</div>
+          <div class="s">Every stage retains reserve continuity so a field swap can preserve the locked profile.</div>
+        </div>
+        <div class="card">
+          <div class="t">Underwriting support</div>
+          <div class="v">Included</div>
+          <div class="s">Traceability pack, source-lot visibility, release logic, and root-cause record export are ready for underwriting review.</div>
+        </div>
+        <div class="card">
+          <div class="t">Released inventory</div>
+          <div class="v">64 cells</div>
+          <div class="s">56 locked cells plus 8 reserve cells in the same release family.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="strip">
+    <div class="dark-panel">
+      <h3>BuildFit formula</h3>
+      <p>The release engine does not chase the highest-capacity cells in isolation. It rewards build-level cohesion under UPS duty, preserves a worst-stage floor, and keeps reserve cells inside the same release family so a manufacturer can replace one position without breaking the release logic.</p>
+      <div class="formula-grid">
+        <div class="formula-mini"><div class="k">Mean CellScore</div><div class="v">95.5</div><div class="s">Weighted across every locked cell inside the released build.</div></div>
+        <div class="formula-mini"><div class="k">Mean StageFit</div><div class="v">93.9</div><div class="s">Average stage cohesion under the locked release window.</div></div>
+        <div class="formula-mini"><div class="k">Worst StageFit</div><div class="v">85.8</div><div class="s">Release floor preserved even in the most difficult stage.</div></div>
+        <div class="formula-mini"><div class="k">Reserve Mean</div><div class="v">96.0</div><div class="s">Reserve-rack score inside the same chemistry and format lock.</div></div>
+        <div class="formula-mini"><div class="k">Traceability</div><div class="v">100</div><div class="s">No release without a complete passport record and source-lot visibility.</div></div>
+        <div class="formula-mini"><div class="k">BuildFit</div><div class="v">95.4</div><div class="s">Final release decision shown to procurement and manufacturing.</div></div>
+      </div>
+      <div class="formula">BuildFit = 0.52·mean(CellScore_locked) + 0.17·mean(StageFit) + 0.06·min(StageFit) + 0.10·mean(CellScore_reserve) + 0.15·TraceabilityCompleteness</div>
+      <div class="quote">The point of this passport is not to prove that one cell looks good in isolation. It proves that the entire released build is coherent enough to manufacture, traceable enough to underwrite, and stable enough to preserve after a field swap.</div>
+    </div>
+
+    <div class="panel light-panel">
+      <h3>Matched reserve rack</h3>
+      <p class="subhead">Reserve cells remain inside the same chemistry lock, format lock, and release logic so the manufacturer can hold the geometry and release profile constant after incoming QA or a field replacement event.</p>
+      <div class="reserve-grid" id="reserveGrid"></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel section">
+      <h3>Source lot visibility</h3>
+      <p class="subhead">A UPS manufacturer should be able to judge the donor lot, not just the final build. The full screened lot is visible below so procurement can see which cells were locked into the build, which were held as reserves, and which were excluded from release before purchase approval.</p>
+      <div class="lot-legend">
+        <span class="item"><span class="dot green"></span> locked build cell</span>
+        <span class="item"><span class="dot blue"></span> reserve cell</span>
+        <span class="item"><span class="dot red"></span> excluded from release</span>
+      </div>
+      <div class="lot-summ">
+        <div class="box"><div class="k">Screened lot</div><div class="v">72</div><div class="s">Full source lot screened under one chemistry and format lock.</div></div>
+        <div class="box"><div class="k">Locked build</div><div class="v">56</div><div class="s">Cells assigned to the released 14S4P build.</div></div>
+        <div class="box"><div class="k">Reserve rack</div><div class="v">8</div><div class="s">Stage-linked reserve cells retained inside the same release family.</div></div>
+        <div class="box"><div class="k">Excluded</div><div class="v">8</div><div class="s">Rejected for release because they did not preserve the build window.</div></div>
+      </div>
+      <div class="lot-wrap">
+        <div class="lot-grid" id="lotGrid"></div>
+      </div>
+    </div>
+
+    <div class="panel section">
+      <h3>Source lot traceability record</h3>
+      <p class="subhead">The lock decision is only as strong as the provenance behind it. These fields are preserved inside the BATReX passport record so the released build remains traceable from source lot to installed stage position.</p>
+      <div class="cards">
+        <div class="card">
+          <div class="t">Chemistry classification</div>
+          <div class="v">NMC</div>
+          <div class="s">One chemistry lock preserved across the locked build and the reserve rack.</div>
+        </div>
+        <div class="card">
+          <div class="t">Cell format</div>
+          <div class="v">21700</div>
+          <div class="s">One format lock preserved across release, reserve, and source-lot review.</div>
+        </div>
+        <div class="card">
+          <div class="t">Source channel</div>
+          <div class="v">Insurer and fleet recovery</div>
+          <div class="s">Local intake preserved inside the BATReX trace record before sorting and grading.</div>
+        </div>
+        <div class="card">
+          <div class="t">Timestamp</div>
+          <div class="v">2026-04-07 10:02 ET</div>
+          <div class="s">Source lot locked after final release screening and reserve assignment.</div>
+        </div>
+        <div class="card">
+          <div class="t">Equipment ID</div>
+          <div class="v">BX-DIAG-UPS-04</div>
+          <div class="s">The exact station that captured the final measurements and release record.</div>
+        </div>
+        <div class="card">
+          <div class="t">Passport record</div>
+          <div class="v">QR active</div>
+          <div class="s">Source lot, locked build, and reserve rack remain tied to one exportable record.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">BATReX does not simply recycle — we revive. Locked build passport for data-center UPS manufacturing, built around cell-level diagnostic logic, traceability, and stationary second-life deployment.</div>
+</div>
+
+<script>
+  const cells = [{"id": "BX21700-045", "cap": 4.072532614165353, "ir": 18.396817754311865, "sd": 0.7982183865157186, "th": 2.039204691024008, "v": 3.701948634342516, "soh": 94.98838527527977, "score": 94.98016902153469, "series": 1, "parallel": 1, "stage_fit": 92.30538809734632, "reserve_id": "BX21700-059", "d_cap": 0.0033733704670506626, "d_ir": 0.04697151416718626, "d_sd": -0.00956908197000872, "d_th": 0.023077967416846423, "d_v": 0.0008900518578105476, "score_round": 95.0, "soh_round": 95.0, "cap_round": 4.073, "ir_round": 18.4, "sd_round": 0.8, "th_round": 2.04, "v_round": 3.702, "d_cap_round": 0.003, "d_ir_round": 0.05, "d_sd_round": -0.01, "d_th_round": 0.02, "d_v_mv_round": 0.9}, {"id": "BX21700-043", "cap": 4.066068638225547, "ir": 18.389727632867697, "sd": 0.8138898989362604, "th": 2.0544859382792433, "v": 3.702290729374342, "soh": 94.98092348568868, "score": 94.53999846579336, "series": 1, "parallel": 2, "stage_fit": 92.30538809734632, "reserve_id": "BX21700-059", "d_cap": -0.0030906054727557475, "d_ir": 0.03988139272301794, "d_sd": 0.006102430450533047, "d_th": 0.0383592146720817, "d_v": 0.001232146889636354, "score_round": 94.5, "soh_round": 95.0, "cap_round": 4.066, "ir_round": 18.39, "sd_round": 0.81, "th_round": 2.05, "v_round": 3.702, "d_cap_round": -0.003, "d_ir_round": 0.04, "d_sd_round": 0.01, "d_th_round": 0.04, "d_v_mv_round": 1.2}, {"id": "BX21700-003", "cap": 4.065193497624816, "ir": 18.249339965639617, "sd": 0.823877775871603, "th": 1.9908162651253947, "v": 3.6990693474081713, "soh": 95.35865728566378, "score": 93.66551303327567, "series": 1, "parallel": 3, "stage_fit": 92.30538809734632, "reserve_id": "BX21700-064", "d_cap": -0.003965746073486542, "d_ir": -0.10050627450506155, "d_sd": 0.01609030738587569, "d_th": -0.02531045848176694, "d_v": -0.001989235076534257, "score_round": 93.7, "soh_round": 95.4, "cap_round": 4.065, "ir_round": 18.25, "sd_round": 0.82, "th_round": 1.99, "v_round": 3.699, "d_cap_round": -0.004, "d_ir_round": -0.1, "d_sd_round": 0.02, "d_th_round": -0.03, "d_v_mv_round": -2.0}, {"id": "BX21700-050", "cap": 4.072842224777493, "ir": 18.363499607759536, "sd": 0.7951638126193272, "th": 1.98, "v": 3.700925618813792, "soh": 94.92356423641328, "score": 93.63241218370781, "series": 1, "parallel": 4, "stage_fit": 92.30538809734632, "reserve_id": "BX21700-059", "d_cap": 0.003682981079190739, "d_ir": 0.013653367614857359, "d_sd": -0.01262365586640013, "d_th": -0.036126723607161626, "d_v": -0.0001329636709135329, "score_round": 93.6, "soh_round": 94.9, "cap_round": 4.073, "ir_round": 18.36, "sd_round": 0.8, "th_round": 1.98, "v_round": 3.701, "d_cap_round": 0.004, "d_ir_round": 0.01, "d_sd_round": -0.01, "d_th_round": -0.04, "d_v_mv_round": -0.1}, {"id": "BX21700-055", "cap": 4.072762913689878, "ir": 18.25867088063918, "sd": 0.7672293445390878, "th": 2.0869662882230626, "v": 3.7016044434838156, "soh": 95.19016813724102, "score": 98.32726413191645, "series": 2, "parallel": 1, "stage_fit": 96.40991336418266, "reserve_id": "BX21700-061", "d_cap": -0.0007224401754601928, "d_ir": -0.01431419107912646, "d_sd": -0.004561954131827917, "d_th": 0.0323460404460314, "d_v": 0.0004093617344276268, "score_round": 98.3, "soh_round": 95.2, "cap_round": 4.073, "ir_round": 18.26, "sd_round": 0.77, "th_round": 2.09, "v_round": 3.702, "d_cap_round": -0.001, "d_ir_round": -0.01, "d_sd_round": -0.0, "d_th_round": 0.03, "d_v_mv_round": 0.4}, {"id": "BX21700-018", "cap": 4.072067413149763, "ir": 18.26436834885419, "sd": 0.7644272275049298, "th": 2.054682296680373, "v": 3.7012309917194357, "soh": 94.86520525206302, "score": 97.68821345589724, "series": 2, "parallel": 2, "stage_fit": 96.40991336418266, "reserve_id": "BX21700-060", "d_cap": -0.0014179407155756607, "d_ir": -0.00861672286411519, "d_sd": -0.007364071165985919, "d_th": 6.204890334160496e-05, "d_v": 3.590997004776497e-05, "score_round": 97.7, "soh_round": 94.9, "cap_round": 4.072, "ir_round": 18.26, "sd_round": 0.76, "th_round": 2.05, "v_round": 3.701, "d_cap_round": -0.001, "d_ir_round": -0.01, "d_sd_round": -0.01, "d_th_round": 0.0, "d_v_mv_round": 0.0}, {"id": "BX21700-019", "cap": 4.0723815398127785, "ir": 18.303681138601544, "sd": 0.7741871778325017, "th": 2.0286677236548614, "v": 3.701097746388278, "soh": 95.05847340756183, "score": 96.37375543717827, "series": 2, "parallel": 3, "stage_fit": 96.40991336418266, "reserve_id": "BX21700-059", "d_cap": -0.0011038140525601037, "d_ir": 0.03069606688323745, "d_sd": 0.002395879161586012, "d_th": -0.025952524122169862, "d_v": -9.733536110978491e-05, "score_round": 96.4, "soh_round": 95.1, "cap_round": 4.072, "ir_round": 18.3, "sd_round": 0.77, "th_round": 2.03, "v_round": 3.701, "d_cap_round": -0.001, "d_ir_round": 0.03, "d_sd_round": 0.0, "d_th_round": -0.03, "d_v_mv_round": -0.1}, {"id": "BX21700-029", "cap": 4.076729548808935, "ir": 18.265219918778307, "sd": 0.7813214448071435, "th": 2.048164682549828, "v": 3.7008471454060228, "soh": 94.55410992636176, "score": 96.28204118819164, "series": 2, "parallel": 4, "stage_fit": 96.40991336418266, "reserve_id": "BX21700-060", "d_cap": 0.003244194943595957, "d_ir": -0.0077651529399993535, "d_sd": 0.009530146136227824, "d_th": -0.006455565227203142, "d_v": -0.00034793634336516277, "score_round": 96.3, "soh_round": 94.6, "cap_round": 4.077, "ir_round": 18.27, "sd_round": 0.78, "th_round": 2.05, "v_round": 3.701, "d_cap_round": 0.003, "d_ir_round": -0.01, "d_sd_round": 0.01, "d_th_round": -0.01, "d_v_mv_round": -0.3}, {"id": "BX21700-026", "cap": 4.074288473439435, "ir": 18.254454569077456, "sd": 0.8397001712370685, "th": 2.0735557401227407, "v": 3.7003650931856904, "soh": 94.97478537558835, "score": 96.06969349715611, "series": 3, "parallel": 1, "stage_fit": 93.10698342670524, "reserve_id": "BX21700-064", "d_cap": -0.0005102663456515444, "d_ir": -0.046528953381891114, "d_sd": 0.031235203921647026, "d_th": -0.034747954367107425, "d_v": -0.0009868278013853704, "score_round": 96.1, "soh_round": 95.0, "cap_round": 4.074, "ir_round": 18.25, "sd_round": 0.84, "th_round": 2.07, "v_round": 3.7, "d_cap_round": -0.001, "d_ir_round": -0.05, "d_sd_round": 0.03, "d_th_round": -0.03, "d_v_mv_round": -1.0}, {"id": "BX21700-035", "cap": 4.0716117523393205, "ir": 18.31808868362075, "sd": 0.8009247679045118, "th": 2.17, "v": 3.702132971266624, "soh": 94.77726207139635, "score": 95.60467106925616, "series": 3, "parallel": 2, "stage_fit": 93.10698342670524, "reserve_id": "BX21700-061", "d_cap": -0.0031869874457663983, "d_ir": 0.01710516116140326, "d_sd": -0.007540199410909665, "d_th": 0.061696305510151817, "d_v": 0.0007810502795484453, "score_round": 95.6, "soh_round": 94.8, "cap_round": 4.072, "ir_round": 18.32, "sd_round": 0.8, "th_round": 2.17, "v_round": 3.702, "d_cap_round": -0.003, "d_ir_round": 0.02, "d_sd_round": -0.01, "d_th_round": 0.06, "d_v_mv_round": 0.8}, {"id": "BX21700-004", "cap": 4.079306564870967, "ir": 18.302280127959815, "sd": 0.7929687758371685, "th": 2.0618350501814735, "v": 3.701647443367067, "soh": 94.62942376319502, "score": 95.37622931768446, "series": 3, "parallel": 3, "stage_fit": 93.10698342670524, "reserve_id": "BX21700-061", "d_cap": 0.00450782508587988, "d_ir": 0.001296605500467507, "d_sd": -0.015496191478252985, "d_th": -0.04646864430837461, "d_v": 0.0002955223799911977, "score_round": 95.4, "soh_round": 94.6, "cap_round": 4.079, "ir_round": 18.3, "sd_round": 0.79, "th_round": 2.06, "v_round": 3.702, "d_cap_round": 0.005, "d_ir_round": 0.0, "d_sd_round": -0.02, "d_th_round": -0.05, "d_v_mv_round": 0.3}, {"id": "BX21700-037", "cap": 4.073988168490624, "ir": 18.329110709179375, "sd": 0.8002661542829371, "th": 2.1278239876551774, "v": 3.701262176128921, "soh": 95.26192639389727, "score": 95.26028994885515, "series": 3, "parallel": 4, "stage_fit": 93.10698342670524, "reserve_id": "BX21700-061", "d_cap": -0.0008105712944628252, "d_ir": 0.028127186720027453, "d_sd": -0.008198813032484376, "d_th": 0.019520293165329328, "d_v": -8.974485815471667e-05, "score_round": 95.3, "soh_round": 95.3, "cap_round": 4.074, "ir_round": 18.33, "sd_round": 0.8, "th_round": 2.13, "v_round": 3.701, "d_cap_round": -0.001, "d_ir_round": 0.03, "d_sd_round": -0.01, "d_th_round": 0.02, "d_v_mv_round": -0.1}, {"id": "BX21700-005", "cap": 4.0736277921995026, "ir": 18.235690967275804, "sd": 0.715859822923805, "th": 2.056863452789346, "v": 3.7014466458634376, "soh": 94.75513242985824, "score": 96.30629250593425, "series": 4, "parallel": 1, "stage_fit": 94.56509894015878, "reserve_id": "BX21700-057", "d_cap": -0.002905789076384835, "d_ir": -0.005888913277853902, "d_sd": -0.02711778710074697, "d_th": -0.06512666637883502, "d_v": -0.00022101475196967257, "score_round": 96.3, "soh_round": 94.8, "cap_round": 4.074, "ir_round": 18.24, "sd_round": 0.72, "th_round": 2.06, "v_round": 3.701, "d_cap_round": -0.003, "d_ir_round": -0.01, "d_sd_round": -0.03, "d_th_round": -0.07, "d_v_mv_round": -0.2}, {"id": "BX21700-012", "cap": 4.079184171931411, "ir": 18.257692414812958, "sd": 0.7592606102434063, "th": 2.1212191836498304, "v": 3.701800443297568, "soh": 95.2084333999456, "score": 95.71103090168084, "series": 4, "parallel": 2, "stage_fit": 94.56509894015878, "reserve_id": "BX21700-061", "d_cap": 0.0026505906555236436, "d_ir": 0.016112534259299593, "d_sd": 0.016283000218854315, "d_th": -0.0007709355183505018, "d_v": 0.00013278268216065925, "score_round": 95.7, "soh_round": 95.2, "cap_round": 4.079, "ir_round": 18.26, "sd_round": 0.76, "th_round": 2.12, "v_round": 3.702, "d_cap_round": 0.003, "d_ir_round": 0.02, "d_sd_round": 0.02, "d_th_round": -0.0, "d_v_mv_round": 0.1}, {"id": "BX21700-032", "cap": 4.079150154072275, "ir": 18.255849292049135, "sd": 0.7513432902157013, "th": 2.1441561955539874, "v": 3.7021266353829088, "soh": 94.84975294531405, "score": 95.11169712043352, "series": 4, "parallel": 3, "stage_fit": 94.56509894015878, "reserve_id": "BX21700-061", "d_cap": 0.0026165727963878282, "d_ir": 0.014269411495476447, "d_sd": 0.00836568019114936, "d_th": 0.022166076385806477, "d_v": 0.00045897476750145216, "score_round": 95.1, "soh_round": 94.8, "cap_round": 4.079, "ir_round": 18.26, "sd_round": 0.75, "th_round": 2.14, "v_round": 3.702, "d_cap_round": 0.003, "d_ir_round": 0.01, "d_sd_round": 0.01, "d_th_round": 0.02, "d_v_mv_round": 0.5}, {"id": "BX21700-011", "cap": 4.07417220690036, "ir": 18.217086848076743, "sd": 0.7454467167152954, "th": 2.16572164467956, "v": 3.7012969179177153, "soh": 94.81704751267391, "score": 94.97972157094323, "series": 4, "parallel": 4, "stage_fit": 94.56509894015878, "reserve_id": "BX21700-061", "d_cap": -0.002361374375527525, "d_ir": -0.024493032476915033, "d_sd": 0.0024691066907434056, "d_th": 0.043731525511379044, "d_v": -0.00037074269769199475, "score_round": 95.0, "soh_round": 94.8, "cap_round": 4.074, "ir_round": 18.22, "sd_round": 0.75, "th_round": 2.17, "v_round": 3.701, "d_cap_round": -0.002, "d_ir_round": -0.02, "d_sd_round": 0.0, "d_th_round": 0.04, "d_v_mv_round": -0.4}, {"id": "BX21700-033", "cap": 4.069458939772658, "ir": 18.189033269301255, "sd": 0.7674406171794764, "th": 2.1165480002410053, "v": 3.701274969556894, "soh": 94.86077149795352, "score": 97.03878131059518, "series": 5, "parallel": 1, "stage_fit": 96.09033697528947, "reserve_id": "BX21700-061", "d_cap": -0.0018051815412176708, "d_ir": 0.011171231946406124, "d_sd": 0.013432926876499773, "d_th": 0.003952488907096985, "d_v": -0.0005520374597236533, "score_round": 97.0, "soh_round": 94.9, "cap_round": 4.069, "ir_round": 18.19, "sd_round": 0.77, "th_round": 2.12, "v_round": 3.701, "d_cap_round": -0.002, "d_ir_round": 0.01, "d_sd_round": 0.01, "d_th_round": 0.0, "d_v_mv_round": -0.6}, {"id": "BX21700-025", "cap": 4.0705651199844715, "ir": 18.168430335715247, "sd": 0.7442875357541396, "th": 2.0978819873001875, "v": 3.7008942289009386, "soh": 94.84360798969827, "score": 96.24064032470072, "series": 5, "parallel": 2, "stage_fit": 96.09033697528947, "reserve_id": "BX21700-060", "d_cap": -0.0006990013294041475, "d_ir": -0.009431701639602608, "d_sd": -0.009720154548837012, "d_th": -0.014713524033720837, "d_v": -0.0009327781156791559, "score_round": 96.2, "soh_round": 94.8, "cap_round": 4.071, "ir_round": 18.17, "sd_round": 0.74, "th_round": 2.1, "v_round": 3.701, "d_cap_round": -0.001, "d_ir_round": -0.01, "d_sd_round": -0.01, "d_th_round": -0.01, "d_v_mv_round": -0.9}, {"id": "BX21700-039", "cap": 4.071016727602961, "ir": 18.17207073446867, "sd": 0.7565289569545735, "th": 2.148249206018234, "v": 3.7020039327977727, "soh": 94.50571733506959, "score": 96.08641330966523, "series": 5, "parallel": 3, "stage_fit": 96.09033697528947, "reserve_id": "BX21700-061", "d_cap": -0.0002473937109144231, "d_ir": -0.0057913028861804605, "d_sd": 0.0025212666515967985, "d_th": 0.035653694684325554, "d_v": 0.000176925781155024, "score_round": 96.1, "soh_round": 94.5, "cap_round": 4.071, "ir_round": 18.17, "sd_round": 0.76, "th_round": 2.15, "v_round": 3.702, "d_cap_round": -0.0, "d_ir_round": -0.01, "d_sd_round": 0.0, "d_th_round": 0.04, "d_v_mv_round": 0.2}, {"id": "BX21700-053", "cap": 4.074015697895411, "ir": 18.18191380993422, "sd": 0.7477736513237169, "th": 2.087702851776206, "v": 3.703134896810865, "soh": 94.86483230695589, "score": 95.82077463471234, "series": 5, "parallel": 4, "stage_fit": 96.09033697528947, "reserve_id": "BX21700-061", "d_cap": 0.0027515765815353532, "d_ir": 0.004051772579369839, "d_sd": -0.006234038979259782, "d_th": -0.024892659557702146, "d_v": 0.001307889794247341, "score_round": 95.8, "soh_round": 94.9, "cap_round": 4.074, "ir_round": 18.18, "sd_round": 0.75, "th_round": 2.09, "v_round": 3.703, "d_cap_round": 0.003, "d_ir_round": 0.0, "d_sd_round": -0.01, "d_th_round": -0.02, "d_v_mv_round": 1.3}, {"id": "BX21700-021", "cap": 4.068520694202668, "ir": 18.294125115734634, "sd": 0.7749550810334596, "th": 2.0881401757352935, "v": 3.7019552670098443, "soh": 94.61517480217316, "score": 98.36993147928925, "series": 6, "parallel": 1, "stage_fit": 97.16973452902077, "reserve_id": "BX21700-061", "d_cap": -8.381127430290292e-05, "d_ir": -0.004429319531126907, "d_sd": 0.0007942881514381162, "d_th": -0.013735578117976655, "d_v": 0.00010510294212107141, "score_round": 98.4, "soh_round": 94.6, "cap_round": 4.069, "ir_round": 18.29, "sd_round": 0.77, "th_round": 2.09, "v_round": 3.702, "d_cap_round": -0.0, "d_ir_round": -0.0, "d_sd_round": 0.0, "d_th_round": -0.01, "d_v_mv_round": 0.1}, {"id": "BX21700-015", "cap": 4.067180820816793, "ir": 18.281167958653256, "sd": 0.779836932997328, "th": 2.10572877224433, "v": 3.702531307021737, "soh": 94.99720330905588, "score": 97.64811331948731, "series": 6, "parallel": 2, "stage_fit": 97.16973452902077, "reserve_id": "BX21700-061", "d_cap": -0.0014236846601782815, "d_ir": -0.017386476612504254, "d_sd": 0.005676140115306594, "d_th": 0.0038530183910596705, "d_v": 0.0006811429540136693, "score_round": 97.6, "soh_round": 95.0, "cap_round": 4.067, "ir_round": 18.28, "sd_round": 0.78, "th_round": 2.11, "v_round": 3.703, "d_cap_round": -0.001, "d_ir_round": -0.02, "d_sd_round": 0.01, "d_th_round": 0.0, "d_v_mv_round": 0.7}, {"id": "BX21700-040", "cap": 4.069013406968099, "ir": 18.304267791667524, "sd": 0.7799156255559238, "th": 2.1093003244508126, "v": 3.702510567226609, "soh": 94.90495279208562, "score": 97.64164426504726, "series": 6, "parallel": 3, "stage_fit": 97.16973452902077, "reserve_id": "BX21700-061", "d_cap": 0.0004089014911281552, "d_ir": 0.005713356401763292, "d_sd": 0.00575483267390231, "d_th": 0.007424570597542424, "d_v": 0.000660403158885714, "score_round": 97.6, "soh_round": 94.9, "cap_round": 4.069, "ir_round": 18.3, "sd_round": 0.78, "th_round": 2.11, "v_round": 3.703, "d_cap_round": 0.0, "d_ir_round": 0.01, "d_sd_round": 0.01, "d_th_round": 0.01, "d_v_mv_round": 0.7}, {"id": "BX21700-056", "cap": 4.069703099920324, "ir": 18.31465687500763, "sd": 0.7619355319413744, "th": 2.1043337429826443, "v": 3.700403515012702, "soh": 94.75224955427821, "score": 96.59616338698046, "series": 6, "parallel": 4, "stage_fit": 97.16973452902077, "reserve_id": "BX21700-063", "d_cap": 0.0010985944433530292, "d_ir": 0.01610243974186787, "d_sd": -0.01222526094064702, "d_th": 0.0024579891293741163, "d_v": -0.0014466490550213429, "score_round": 96.6, "soh_round": 94.8, "cap_round": 4.07, "ir_round": 18.31, "sd_round": 0.76, "th_round": 2.1, "v_round": 3.7, "d_cap_round": 0.001, "d_ir_round": 0.02, "d_sd_round": -0.01, "d_th_round": 0.0, "d_v_mv_round": -1.4}, {"id": "BX21700-034", "cap": 4.065513477784785, "ir": 18.252127303267464, "sd": 0.7972019971655734, "th": 2.1040793705553735, "v": 3.701637442689278, "soh": 94.72786785797581, "score": 97.508090709209, "series": 7, "parallel": 1, "stage_fit": 94.77653021449315, "reserve_id": "BX21700-061", "d_cap": 0.0019572083245549265, "d_ir": 0.01769530581708878, "d_sd": 0.00565849477897673, "d_th": 0.028424997369258964, "d_v": -0.00024191446697763297, "score_round": 97.5, "soh_round": 94.7, "cap_round": 4.066, "ir_round": 18.25, "sd_round": 0.8, "th_round": 2.1, "v_round": 3.702, "d_cap_round": 0.002, "d_ir_round": 0.02, "d_sd_round": 0.01, "d_th_round": 0.03, "d_v_mv_round": -0.2}, {"id": "BX21700-041", "cap": 4.064169502830241, "ir": 18.253642597847175, "sd": 0.8039963174495646, "th": 2.0519697127331846, "v": 3.703109353980983, "soh": 95.34615142605111, "score": 96.35279517788352, "series": 7, "parallel": 2, "stage_fit": 94.77653021449315, "reserve_id": "BX21700-059", "d_cap": 0.0006132333700108461, "d_ir": 0.019210600396800004, "d_sd": 0.012452815062967915, "d_th": -0.02368466045292994, "d_v": 0.001229996824727575, "score_round": 96.4, "soh_round": 95.3, "cap_round": 4.064, "ir_round": 18.25, "sd_round": 0.8, "th_round": 2.05, "v_round": 3.703, "d_cap_round": 0.001, "d_ir_round": 0.02, "d_sd_round": 0.01, "d_th_round": -0.02, "d_v_mv_round": 1.2}, {"id": "BX21700-024", "cap": 4.064418561134953, "ir": 18.20068039192083, "sd": 0.7593228376306549, "th": 2.0757112787223964, "v": 3.700612933262268, "soh": 94.74281473914111, "score": 95.92971696226694, "series": 7, "parallel": 3, "stage_fit": 94.77653021449315, "reserve_id": "BX21700-060", "d_cap": 0.0008622916747222931, "d_ir": -0.03375160552954526, "d_sd": -0.032220664755941764, "d_th": 5.6905536281792735e-05, "d_v": -0.0012664238939876782, "score_round": 95.9, "soh_round": 94.7, "cap_round": 4.064, "ir_round": 18.2, "sd_round": 0.76, "th_round": 2.08, "v_round": 3.701, "d_cap_round": 0.001, "d_ir_round": -0.03, "d_sd_round": -0.03, "d_th_round": 0.0, "d_v_mv_round": -1.3}, {"id": "BX21700-001", "cap": 4.0601235360909405, "ir": 18.231277696766032, "sd": 0.8056528573005939, "th": 2.0708571307335037, "v": 3.7021576986924933, "soh": 94.55836833977504, "score": 95.92034848982212, "series": 7, "parallel": 4, "stage_fit": 94.77653021449315, "reserve_id": "BX21700-059", "d_cap": -0.003432733369289842, "d_ir": -0.003154300684343525, "d_sd": 0.01410935491399723, "d_th": -0.004797242452610817, "d_v": 0.00027834153623773616, "score_round": 95.9, "soh_round": 94.6, "cap_round": 4.06, "ir_round": 18.23, "sd_round": 0.81, "th_round": 2.07, "v_round": 3.702, "d_cap_round": -0.003, "d_ir_round": -0.0, "d_sd_round": 0.01, "d_th_round": -0.0, "d_v_mv_round": 0.3}, {"id": "BX21700-002", "cap": 4.068595691262897, "ir": 18.219237289840535, "sd": 0.8110591756753875, "th": 2.0874636753500817, "v": 3.7019827262961997, "soh": 94.73224619861091, "score": 98.08476896744818, "series": 8, "parallel": 1, "stage_fit": 96.19782755496931, "reserve_id": "BX21700-061", "d_cap": -0.0012990865981477029, "d_ir": 0.010713289833056194, "d_sd": -0.008294735476999437, "d_th": -0.001603017055054945, "d_v": -0.00011471498683546244, "score_round": 98.1, "soh_round": 94.7, "cap_round": 4.069, "ir_round": 18.22, "sd_round": 0.81, "th_round": 2.09, "v_round": 3.702, "d_cap_round": -0.001, "d_ir_round": 0.01, "d_sd_round": -0.01, "d_th_round": -0.0, "d_v_mv_round": -0.1}, {"id": "BX21700-054", "cap": 4.073394175654862, "ir": 18.237964357140605, "sd": 0.8155209829838361, "th": 2.089626722331319, "v": 3.7022435149712054, "soh": 95.06071717825411, "score": 97.59251062725669, "series": 8, "parallel": 2, "stage_fit": 96.19782755496931, "reserve_id": "BX21700-061", "d_cap": 0.0034993977938171383, "d_ir": 0.029440357133125872, "d_sd": -0.003832928168550853, "d_th": 0.000560029926182537, "d_v": 0.00014607368817021182, "score_round": 97.6, "soh_round": 95.1, "cap_round": 4.073, "ir_round": 18.24, "sd_round": 0.82, "th_round": 2.09, "v_round": 3.702, "d_cap_round": 0.003, "d_ir_round": 0.03, "d_sd_round": -0.0, "d_th_round": 0.0, "d_v_mv_round": 0.1}, {"id": "BX21700-023", "cap": 4.066004048283953, "ir": 18.20317869473835, "sd": 0.8336495729183424, "th": 2.079098183944304, "v": 3.701691674327928, "soh": 95.09473976763164, "score": 96.4539734022845, "series": 8, "parallel": 3, "stage_fit": 96.19782755496931, "reserve_id": "BX21700-058", "d_cap": -0.0038907295770913564, "d_ir": -0.005345305269127465, "d_sd": 0.014295661765955425, "d_th": -0.009968508460832748, "d_v": -0.00040576695510718963, "score_round": 96.5, "soh_round": 95.1, "cap_round": 4.066, "ir_round": 18.2, "sd_round": 0.83, "th_round": 2.08, "v_round": 3.702, "d_cap_round": -0.004, "d_ir_round": -0.01, "d_sd_round": 0.01, "d_th_round": -0.01, "d_v_mv_round": -0.4}, {"id": "BX21700-030", "cap": 4.0715851962424665, "ir": 18.173715658310417, "sd": 0.817185913031982, "th": 2.1000781879948427, "v": 3.702471849536808, "soh": 95.15321765867648, "score": 96.39675461345033, "series": 8, "parallel": 4, "stage_fit": 96.19782755496931, "reserve_id": "BX21700-058", "d_cap": 0.001690418381421921, "d_ir": -0.03480834169706171, "d_sd": -0.0021679981204050236, "d_th": 0.011011495589706044, "d_v": 0.00037440825377288434, "score_round": 96.4, "soh_round": 95.2, "cap_round": 4.072, "ir_round": 18.17, "sd_round": 0.82, "th_round": 2.1, "v_round": 3.702, "d_cap_round": 0.002, "d_ir_round": -0.03, "d_sd_round": -0.0, "d_th_round": 0.01, "d_v_mv_round": 0.4}, {"id": "BX21700-036", "cap": 4.0684001748118455, "ir": 18.327232327257352, "sd": 0.7487578719307253, "th": 2.0721685386082656, "v": 3.7003283470182504, "soh": 94.84571607027272, "score": 95.98461886672112, "series": 9, "parallel": 1, "stage_fit": 93.37084436527758, "reserve_id": "BX21700-063", "d_cap": 0.005984985592181857, "d_ir": -0.02138155531765662, "d_sd": -0.010699424252968659, "d_th": -0.04201610767781627, "d_v": -0.001982731543729521, "score_round": 96.0, "soh_round": 94.8, "cap_round": 4.068, "ir_round": 18.33, "sd_round": 0.75, "th_round": 2.07, "v_round": 3.7, "d_cap_round": 0.006, "d_ir_round": -0.02, "d_sd_round": -0.01, "d_th_round": -0.04, "d_v_mv_round": -2.0}, {"id": "BX21700-046", "cap": 4.060064658571128, "ir": 18.342780242330406, "sd": 0.7880512304254748, "th": 2.117538205521286, "v": 3.703265653383985, "soh": 94.9625794859526, "score": 93.46356843770938, "series": 9, "parallel": 2, "stage_fit": 93.37084436527758, "reserve_id": "BX21700-061", "d_cap": -0.0023505306485356314, "d_ir": -0.005833640244603089, "d_sd": 0.028593934241780805, "d_th": 0.0033535592352040844, "d_v": 0.0009545748220052275, "score_round": 93.5, "soh_round": 95.0, "cap_round": 4.06, "ir_round": 18.34, "sd_round": 0.79, "th_round": 2.12, "v_round": 3.703, "d_cap_round": -0.002, "d_ir_round": -0.01, "d_sd_round": 0.03, "d_th_round": 0.0, "d_v_mv_round": 1.0}, {"id": "BX21700-022", "cap": 4.059707896282796, "ir": 18.324105814335358, "sd": 0.7600244135030912, "th": 2.132064018830603, "v": 3.7031519750395123, "soh": 94.78027001824816, "score": 93.21072908591323, "series": 9, "parallel": 3, "stage_fit": 93.37084436527758, "reserve_id": "BX21700-061", "d_cap": -0.002707292936867667, "d_ir": -0.024508068239651237, "d_sd": 0.0005671173193972923, "d_th": 0.01787937254452121, "d_v": 0.0008408964775323824, "score_round": 93.2, "soh_round": 94.8, "cap_round": 4.06, "ir_round": 18.32, "sd_round": 0.76, "th_round": 2.13, "v_round": 3.703, "d_cap_round": -0.003, "d_ir_round": -0.02, "d_sd_round": 0.0, "d_th_round": 0.02, "d_v_mv_round": 0.8}, {"id": "BX21700-008", "cap": 4.061488027212883, "ir": 18.400337146376913, "sd": 0.7409956688754844, "th": 2.1349678221841724, "v": 3.7024983388061727, "soh": 94.77995137035352, "score": 92.1176973594431, "series": 9, "parallel": 4, "stage_fit": 93.37084436527758, "reserve_id": "BX21700-063", "d_cap": -0.0009271620067803354, "d_ir": 0.05172326380190384, "d_sd": -0.01846162730820955, "d_th": 0.020783175898090533, "d_v": 0.00018726024419279952, "score_round": 92.1, "soh_round": 94.8, "cap_round": 4.061, "ir_round": 18.4, "sd_round": 0.74, "th_round": 2.13, "v_round": 3.702, "d_cap_round": -0.001, "d_ir_round": 0.05, "d_sd_round": -0.02, "d_th_round": 0.02, "d_v_mv_round": 0.2}, {"id": "BX21700-013", "cap": 4.06937643850568, "ir": 18.18597883983775, "sd": 0.86, "th": 2.1401199212319724, "v": 3.702172559918777, "soh": 94.87592158826764, "score": 95.22519617791342, "series": 10, "parallel": 1, "stage_fit": 91.03911600137687, "reserve_id": "BX21700-058", "d_cap": 0.006255220670562167, "d_ir": -0.012842833166544665, "d_sd": 0.09778372806177615, "d_th": 0.02647321331470387, "d_v": -0.00014847793629257922, "score_round": 95.2, "soh_round": 94.9, "cap_round": 4.069, "ir_round": 18.19, "sd_round": 0.86, "th_round": 2.14, "v_round": 3.702, "d_cap_round": 0.006, "d_ir_round": -0.01, "d_sd_round": 0.1, "d_th_round": 0.03, "d_v_mv_round": -0.1}, {"id": "BX21700-020", "cap": 4.063754535005202, "ir": 18.219951385542707, "sd": 0.7012117889741681, "th": 2.1198426294148445, "v": 3.7020078503312575, "soh": 94.7413205406346, "score": 94.90046238611264, "series": 10, "parallel": 2, "stage_fit": 91.03911600137687, "reserve_id": "BX21700-063", "d_cap": 0.0006333171700845242, "d_ir": 0.021129712538410672, "d_sd": -0.061004482964055695, "d_th": 0.0061959214975759735, "d_v": -0.0003131875238122639, "score_round": 94.9, "soh_round": 94.7, "cap_round": 4.064, "ir_round": 18.22, "sd_round": 0.7, "th_round": 2.12, "v_round": 3.702, "d_cap_round": 0.001, "d_ir_round": 0.02, "d_sd_round": -0.06, "d_th_round": 0.01, "d_v_mv_round": -0.3}, {"id": "BX21700-014", "cap": 4.062300166588593, "ir": 18.205200524837945, "sd": 0.7374390575925545, "th": 2.121776799285693, "v": 3.7032932838309427, "soh": 94.826595049626, "score": 94.13873983593149, "series": 10, "parallel": 3, "stage_fit": 91.03911600137687, "reserve_id": "BX21700-061", "d_cap": -0.0008210512465245401, "d_ir": 0.006378851833648724, "d_sd": -0.024777214345669374, "d_th": 0.008130091368424353, "d_v": 0.0009722459758729762, "score_round": 94.1, "soh_round": 94.8, "cap_round": 4.062, "ir_round": 18.21, "sd_round": 0.74, "th_round": 2.12, "v_round": 3.703, "d_cap_round": -0.001, "d_ir_round": 0.01, "d_sd_round": -0.02, "d_th_round": 0.01, "d_v_mv_round": 1.0}, {"id": "BX21700-009", "cap": 4.0570537312409956, "ir": 18.18415594179879, "sd": 0.7502142411861726, "th": 2.0728474817365643, "v": 3.701810457339302, "soh": 95.28434110705382, "score": 94.03470169117128, "series": 10, "parallel": 4, "stage_fit": 91.03911600137687, "reserve_id": "BX21700-060", "d_cap": -0.006067486594122151, "d_ir": -0.014665731205507626, "d_sd": -0.012002030752051196, "d_th": -0.040799226180704196, "d_v": -0.000510580515767689, "score_round": 94.0, "soh_round": 95.3, "cap_round": 4.057, "ir_round": 18.18, "sd_round": 0.75, "th_round": 2.07, "v_round": 3.702, "d_cap_round": -0.006, "d_ir_round": -0.01, "d_sd_round": -0.01, "d_th_round": -0.04, "d_v_mv_round": -0.5}, {"id": "BX21700-051", "cap": 4.068230260450617, "ir": 18.21836081682094, "sd": 0.8195104617399362, "th": 2.0268042813976406, "v": 3.7021413366671947, "soh": 95.12085925451589, "score": 96.66752783197954, "series": 11, "parallel": 1, "stage_fit": 93.87369620225135, "reserve_id": "BX21700-059", "d_cap": -0.003926247227003188, "d_ir": -0.00807871359788237, "d_sd": 0.020936232135204458, "d_th": 0.015089859259075133, "d_v": -0.00018591008339408077, "score_round": 96.7, "soh_round": 95.1, "cap_round": 4.068, "ir_round": 18.22, "sd_round": 0.82, "th_round": 2.03, "v_round": 3.702, "d_cap_round": -0.004, "d_ir_round": -0.01, "d_sd_round": 0.02, "d_th_round": 0.02, "d_v_mv_round": -0.2}, {"id": "BX21700-017", "cap": 4.0721693289202845, "ir": 18.235151195844526, "sd": 0.788032471118622, "th": 1.9947491403092128, "v": 3.7014414716784816, "soh": 94.7130633192808, "score": 96.6341406336791, "series": 11, "parallel": 2, "stage_fit": 93.87369620225135, "reserve_id": "BX21700-059", "d_cap": 1.2821242663996202e-05, "d_ir": 0.008711665425703785, "d_sd": -0.010541758486109831, "d_th": -0.01696528182935264, "d_v": -0.0008857750721071866, "score_round": 96.6, "soh_round": 94.7, "cap_round": 4.072, "ir_round": 18.24, "sd_round": 0.79, "th_round": 1.99, "v_round": 3.701, "d_cap_round": 0.0, "d_ir_round": 0.01, "d_sd_round": -0.01, "d_th_round": -0.02, "d_v_mv_round": -0.9}, {"id": "BX21700-042", "cap": 4.074496299370025, "ir": 18.28018823922564, "sd": 0.7824075820571733, "th": 2.0405220964863773, "v": 3.703607488819012, "soh": 94.81850869859446, "score": 96.1171608552245, "series": 11, "parallel": 3, "stage_fit": 93.87369620225135, "reserve_id": "BX21700-059", "d_cap": 0.0023397916924041695, "d_ir": 0.05374870880681826, "d_sd": -0.016166647547558477, "d_th": 0.02880767434781184, "d_v": 0.001280242068423032, "score_round": 96.1, "soh_round": 94.8, "cap_round": 4.074, "ir_round": 18.28, "sd_round": 0.78, "th_round": 2.04, "v_round": 3.704, "d_cap_round": 0.002, "d_ir_round": 0.05, "d_sd_round": -0.02, "d_th_round": 0.03, "d_v_mv_round": 1.3}, {"id": "BX21700-016", "cap": 4.073730141969557, "ir": 18.172057869784187, "sd": 0.8043464035031958, "th": 1.984782170361032, "v": 3.7021186898376675, "soh": 94.83498753100669, "score": 94.62112276103485, "series": 11, "parallel": 4, "stage_fit": 93.87369620225135, "reserve_id": "BX21700-059", "d_cap": 0.0015736342919367985, "d_ir": -0.05438166063463612, "d_sd": 0.0057721738984639615, "d_th": -0.026932251777533445, "d_v": -0.0002085569129213205, "score_round": 94.6, "soh_round": 94.8, "cap_round": 4.074, "ir_round": 18.17, "sd_round": 0.8, "th_round": 1.98, "v_round": 3.702, "d_cap_round": 0.002, "d_ir_round": -0.05, "d_sd_round": 0.01, "d_th_round": -0.03, "d_v_mv_round": -0.2}, {"id": "BX21700-028", "cap": 4.076290592566033, "ir": 18.19255386137653, "sd": 0.794573721385203, "th": 2.079109806246579, "v": 3.703600267141077, "soh": 94.67221306090973, "score": 95.64206232403926, "series": 12, "parallel": 1, "stage_fit": 93.70436464730312, "reserve_id": "BX21700-061", "d_cap": -0.0027048690631161776, "d_ir": 0.04816771228011518, "d_sd": 0.01868644922696039, "d_th": -0.017277469318940586, "d_v": 0.0011461227884028702, "score_round": 95.6, "soh_round": 94.7, "cap_round": 4.076, "ir_round": 18.19, "sd_round": 0.79, "th_round": 2.08, "v_round": 3.704, "d_cap_round": -0.003, "d_ir_round": 0.05, "d_sd_round": 0.02, "d_th_round": -0.02, "d_v_mv_round": 1.1}, {"id": "BX21700-048", "cap": 4.080231598783509, "ir": 18.138975523813333, "sd": 0.7802754295738059, "th": 2.048858056821138, "v": 3.7022473252141683, "soh": 95.10164047724584, "score": 94.01720413968555, "series": 12, "parallel": 2, "stage_fit": 93.70436464730312, "reserve_id": "BX21700-061", "d_cap": 0.0012361371543603283, "d_ir": -0.005410625283083448, "d_sd": 0.00438815741556331, "d_th": -0.04752921874438165, "d_v": -0.00020681913850584266, "score_round": 94.0, "soh_round": 95.1, "cap_round": 4.08, "ir_round": 18.14, "sd_round": 0.78, "th_round": 2.05, "v_round": 3.702, "d_cap_round": 0.001, "d_ir_round": -0.01, "d_sd_round": 0.0, "d_th_round": -0.05, "d_v_mv_round": -0.2}, {"id": "BX21700-049", "cap": 4.079353556254487, "ir": 18.123791549998867, "sd": 0.7856866561031177, "th": 2.1432482635597623, "v": 3.7011973933014906, "soh": 95.06636427294045, "score": 92.75237998513234, "series": 12, "parallel": 3, "stage_fit": 93.70436464730312, "reserve_id": "BX21700-061", "d_cap": 0.0003580946253380901, "d_ir": -0.02059459909754935, "d_sd": 0.009799383944875117, "d_th": 0.04686098799424254, "d_v": -0.0012567510511836133, "score_round": 92.8, "soh_round": 95.1, "cap_round": 4.079, "ir_round": 18.12, "sd_round": 0.79, "th_round": 2.14, "v_round": 3.701, "d_cap_round": 0.0, "d_ir_round": -0.02, "d_sd_round": 0.01, "d_th_round": 0.05, "d_v_mv_round": -1.3}, {"id": "BX21700-038", "cap": 4.080106098912566, "ir": 18.12222366119693, "sd": 0.7430132815708436, "th": 2.1143329756346003, "v": 3.7027715917539603, "soh": 95.20257871200103, "score": 92.4407055852889, "series": 12, "parallel": 4, "stage_fit": 93.70436464730312, "reserve_id": "BX21700-061", "d_cap": 0.001110637283416871, "d_ir": -0.02216248789948594, "d_sd": -0.03287399058739904, "d_th": 0.017945700069080583, "d_v": 0.0003174474012861417, "score_round": 92.4, "soh_round": 95.2, "cap_round": 4.08, "ir_round": 18.12, "sd_round": 0.74, "th_round": 2.11, "v_round": 3.703, "d_cap_round": 0.001, "d_ir_round": -0.02, "d_sd_round": -0.03, "d_th_round": 0.02, "d_v_mv_round": 0.3}, {"id": "BX21700-027", "cap": 4.071045471286119, "ir": 18.307391139041403, "sd": 0.730696281357318, "th": 2.072288457699488, "v": 3.703112802256307, "soh": 94.94282905032179, "score": 96.4923044755595, "series": 13, "parallel": 1, "stage_fit": 95.98915954754537, "reserve_id": "BX21700-063", "d_cap": -0.0016359856751559931, "d_ir": -0.008393290276526244, "d_sd": -0.004799853508251517, "d_th": 0.004160243256835727, "d_v": 0.00034336079999164326, "score_round": 96.5, "soh_round": 94.9, "cap_round": 4.071, "ir_round": 18.31, "sd_round": 0.73, "th_round": 2.07, "v_round": 3.703, "d_cap_round": -0.002, "d_ir_round": -0.01, "d_sd_round": -0.0, "d_th_round": 0.0, "d_v_mv_round": 0.3}, {"id": "BX21700-047", "cap": 4.0776643029236626, "ir": 18.29144381808979, "sd": 0.7464739065448884, "th": 2.082362384848862, "v": 3.7019503137438248, "soh": 95.08645163197401, "score": 96.13167401734471, "series": 13, "parallel": 2, "stage_fit": 95.98915954754537, "reserve_id": "BX21700-063", "d_cap": 0.0049828459623872945, "d_ir": -0.024340611228140574, "d_sd": 0.010977771679318904, "d_th": 0.014234170406209667, "d_v": -0.0008191277124907081, "score_round": 96.1, "soh_round": 95.1, "cap_round": 4.078, "ir_round": 18.29, "sd_round": 0.75, "th_round": 2.08, "v_round": 3.702, "d_cap_round": 0.005, "d_ir_round": -0.02, "d_sd_round": 0.01, "d_th_round": 0.01, "d_v_mv_round": -0.8}, {"id": "BX21700-031", "cap": 4.069381125243453, "ir": 18.318765491542408, "sd": 0.7230000639263279, "th": 2.0574032413162646, "v": 3.7030076477233878, "soh": 94.86534376136099, "score": 95.94542847118063, "series": 13, "parallel": 3, "stage_fit": 95.98915954754537, "reserve_id": "BX21700-057", "d_cap": -0.0033003317178224023, "d_ir": 0.002981062224478137, "d_sd": -0.012496070939241655, "d_th": -0.010724973126387649, "d_v": 0.00023820626707227177, "score_round": 95.9, "soh_round": 94.9, "cap_round": 4.069, "ir_round": 18.32, "sd_round": 0.72, "th_round": 2.06, "v_round": 3.703, "d_cap_round": -0.003, "d_ir_round": 0.0, "d_sd_round": -0.01, "d_th_round": -0.01, "d_v_mv_round": 0.2}, {"id": "BX21700-010", "cap": 4.072634928391867, "ir": 18.345537268598118, "sd": 0.7418142876337437, "th": 2.060458773905995, "v": 3.7030070021017423, "soh": 95.13439484666134, "score": 95.34610742521214, "series": 13, "parallel": 4, "stage_fit": 95.98915954754537, "reserve_id": "BX21700-063", "d_cap": -4.652856940801087e-05, "d_ir": 0.02975283928018868, "d_sd": 0.006318152768174157, "d_th": -0.0076694405366573015, "d_v": 0.00023756064542679312, "score_round": 95.3, "soh_round": 95.1, "cap_round": 4.073, "ir_round": 18.35, "sd_round": 0.74, "th_round": 2.06, "v_round": 3.703, "d_cap_round": -0.0, "d_ir_round": 0.03, "d_sd_round": 0.01, "d_th_round": -0.01, "d_v_mv_round": 0.2}, {"id": "BX21700-052", "cap": 4.059292157970493, "ir": 18.262848116357013, "sd": 0.771670817125676, "th": 2.0488581248792967, "v": 3.70419783198492, "soh": 94.74671630659634, "score": 94.35753850480286, "series": 14, "parallel": 1, "stage_fit": 85.83502896183943, "reserve_id": "BX21700-059", "d_cap": -0.013257850348537659, "d_ir": 0.06232212634852985, "d_sd": 0.016416552374521554, "d_th": -0.014707629603529337, "d_v": 0.0009149828044932029, "score_round": 94.4, "soh_round": 94.7, "cap_round": 4.059, "ir_round": 18.26, "sd_round": 0.77, "th_round": 2.05, "v_round": 3.704, "d_cap_round": -0.013, "d_ir_round": 0.06, "d_sd_round": 0.02, "d_th_round": -0.01, "d_v_mv_round": 0.9}, {"id": "BX21700-007", "cap": 4.074793182822139, "ir": 18.09463334115553, "sd": 0.8106833538976415, "th": 2.0848553976349486, "v": 3.7035827751057595, "soh": 95.01719145509546, "score": 93.65557230349879, "series": 14, "parallel": 2, "stage_fit": 85.83502896183943, "reserve_id": "BX21700-058", "d_cap": 0.002243174503108847, "d_ir": -0.10589264885295435, "d_sd": 0.05542908914648703, "d_th": 0.02128964315212256, "d_v": 0.0002999259253329001, "score_round": 93.7, "soh_round": 95.0, "cap_round": 4.075, "ir_round": 18.09, "sd_round": 0.81, "th_round": 2.08, "v_round": 3.704, "d_cap_round": 0.002, "d_ir_round": -0.11, "d_sd_round": 0.06, "d_th_round": 0.02, "d_v_mv_round": 0.3}, {"id": "BX21700-044", "cap": 4.0747638620806175, "ir": 18.10715333582287, "sd": 0.7486628879813001, "th": 2.0161342646072513, "v": 3.702199306878764, "soh": 94.74418604754621, "score": 93.50999669638685, "series": 14, "parallel": 3, "stage_fit": 85.83502896183943, "reserve_id": "BX21700-059", "d_cap": 0.0022138537615870035, "d_ir": -0.09337265418561458, "d_sd": -0.006591376769854329, "d_th": -0.04743148987557477, "d_v": -0.0010835423016626322, "score_round": 93.5, "soh_round": 94.7, "cap_round": 4.075, "ir_round": 18.11, "sd_round": 0.75, "th_round": 2.02, "v_round": 3.702, "d_cap_round": 0.002, "d_ir_round": -0.09, "d_sd_round": -0.01, "d_th_round": -0.05, "d_v_mv_round": -1.1}, {"id": "BX21700-006", "cap": 4.0813508304028705, "ir": 18.337469166698526, "sd": 0.69, "th": 2.1044152308098085, "v": 3.703151482752263, "soh": 95.21259268699322, "score": 91.62433219904507, "series": 14, "parallel": 4, "stage_fit": 85.83502896183943, "reserve_id": "BX21700-057", "d_cap": 0.008800822083840032, "d_ir": 0.13694317669004263, "d_sd": -0.06525426475115448, "d_th": 0.04084947632698244, "d_v": -0.00013136642816347077, "score_round": 91.6, "soh_round": 95.2, "cap_round": 4.081, "ir_round": 18.34, "sd_round": 0.69, "th_round": 2.1, "v_round": 3.703, "d_cap_round": 0.009, "d_ir_round": 0.14, "d_sd_round": -0.07, "d_th_round": 0.04, "d_v_mv_round": -0.1}];
+  const stageHeaders = [{"series": 1, "fit": 92.3, "reserve_id": "BX21700-059"}, {"series": 2, "fit": 96.4, "reserve_id": "BX21700-060"}, {"series": 3, "fit": 93.1, "reserve_id": "BX21700-061"}, {"series": 4, "fit": 94.6, "reserve_id": "BX21700-063"}, {"series": 5, "fit": 96.1, "reserve_id": "BX21700-061"}, {"series": 6, "fit": 97.2, "reserve_id": "BX21700-061"}, {"series": 7, "fit": 94.8, "reserve_id": "BX21700-061"}, {"series": 8, "fit": 96.2, "reserve_id": "BX21700-058"}, {"series": 9, "fit": 93.4, "reserve_id": "BX21700-061"}, {"series": 10, "fit": 91.0, "reserve_id": "BX21700-061"}, {"series": 11, "fit": 93.9, "reserve_id": "BX21700-059"}, {"series": 12, "fit": 93.7, "reserve_id": "BX21700-061"}, {"series": 13, "fit": 96.0, "reserve_id": "BX21700-063"}, {"series": 14, "fit": 85.8, "reserve_id": "BX21700-061"}];
+  const stageRows = [{"series": 1, "fit": 92.3, "dv_mv": 3.2, "dir_mohm": 0.15, "dth_c": 0.07, "dcap_ah": 0.008, "reserve_id": "BX21700-059", "mean_cap": 4.069, "mean_ir": 18.35, "mean_sd": 0.81, "mean_th": 2.02, "mean_v": 3.701}, {"series": 2, "fit": 96.4, "dv_mv": 0.8, "dir_mohm": 0.05, "dth_c": 0.06, "dcap_ah": 0.005, "reserve_id": "BX21700-060", "mean_cap": 4.073, "mean_ir": 18.27, "mean_sd": 0.77, "mean_th": 2.05, "mean_v": 3.701}, {"series": 3, "fit": 93.1, "dv_mv": 1.8, "dir_mohm": 0.07, "dth_c": 0.11, "dcap_ah": 0.008, "reserve_id": "BX21700-061", "mean_cap": 4.075, "mean_ir": 18.3, "mean_sd": 0.81, "mean_th": 2.11, "mean_v": 3.701}, {"series": 4, "fit": 94.6, "dv_mv": 0.8, "dir_mohm": 0.04, "dth_c": 0.11, "dcap_ah": 0.006, "reserve_id": "BX21700-063", "mean_cap": 4.077, "mean_ir": 18.24, "mean_sd": 0.74, "mean_th": 2.12, "mean_v": 3.702}, {"series": 5, "fit": 96.1, "dv_mv": 2.2, "dir_mohm": 0.02, "dth_c": 0.06, "dcap_ah": 0.005, "reserve_id": "BX21700-061", "mean_cap": 4.071, "mean_ir": 18.18, "mean_sd": 0.75, "mean_th": 2.11, "mean_v": 3.702}, {"series": 6, "fit": 97.2, "dv_mv": 2.1, "dir_mohm": 0.03, "dth_c": 0.02, "dcap_ah": 0.003, "reserve_id": "BX21700-061", "mean_cap": 4.069, "mean_ir": 18.3, "mean_sd": 0.77, "mean_th": 2.1, "mean_v": 3.702}, {"series": 7, "fit": 94.8, "dv_mv": 2.5, "dir_mohm": 0.05, "dth_c": 0.05, "dcap_ah": 0.005, "reserve_id": "BX21700-061", "mean_cap": 4.064, "mean_ir": 18.23, "mean_sd": 0.79, "mean_th": 2.08, "mean_v": 3.702}, {"series": 8, "fit": 96.2, "dv_mv": 0.8, "dir_mohm": 0.06, "dth_c": 0.02, "dcap_ah": 0.007, "reserve_id": "BX21700-058", "mean_cap": 4.07, "mean_ir": 18.21, "mean_sd": 0.82, "mean_th": 2.09, "mean_v": 3.702}, {"series": 9, "fit": 93.4, "dv_mv": 2.9, "dir_mohm": 0.08, "dth_c": 0.06, "dcap_ah": 0.009, "reserve_id": "BX21700-061", "mean_cap": 4.062, "mean_ir": 18.35, "mean_sd": 0.76, "mean_th": 2.11, "mean_v": 3.702}, {"series": 10, "fit": 91.0, "dv_mv": 1.5, "dir_mohm": 0.04, "dth_c": 0.07, "dcap_ah": 0.012, "reserve_id": "BX21700-061", "mean_cap": 4.063, "mean_ir": 18.2, "mean_sd": 0.76, "mean_th": 2.11, "mean_v": 3.702}, {"series": 11, "fit": 93.9, "dv_mv": 2.2, "dir_mohm": 0.11, "dth_c": 0.06, "dcap_ah": 0.006, "reserve_id": "BX21700-059", "mean_cap": 4.072, "mean_ir": 18.23, "mean_sd": 0.8, "mean_th": 2.01, "mean_v": 3.702}, {"series": 12, "fit": 93.7, "dv_mv": 2.4, "dir_mohm": 0.07, "dth_c": 0.09, "dcap_ah": 0.004, "reserve_id": "BX21700-061", "mean_cap": 4.079, "mean_ir": 18.14, "mean_sd": 0.78, "mean_th": 2.1, "mean_v": 3.702}, {"series": 13, "fit": 96.0, "dv_mv": 1.2, "dir_mohm": 0.05, "dth_c": 0.02, "dcap_ah": 0.008, "reserve_id": "BX21700-063", "mean_cap": 4.073, "mean_ir": 18.32, "mean_sd": 0.74, "mean_th": 2.07, "mean_v": 3.703}, {"series": 14, "fit": 85.8, "dv_mv": 2.0, "dir_mohm": 0.24, "dth_c": 0.09, "dcap_ah": 0.022, "reserve_id": "BX21700-061", "mean_cap": 4.073, "mean_ir": 18.2, "mean_sd": 0.76, "mean_th": 2.06, "mean_v": 3.703}];
+  const reserves = [{"id": "BX21700-057", "best_stage": 13, "score_round": 94.8, "soh_round": 94.6, "cap_round": 4.078, "ir_round": 18.27, "sd_round": 0.7, "th_round": 2.06, "v_round": 3.702}, {"id": "BX21700-058", "best_stage": 8, "score_round": 92.0, "soh_round": 94.9, "cap_round": 4.06, "ir_round": 18.13, "sd_round": 0.84, "th_round": 2.05, "v_round": 3.703}, {"id": "BX21700-059", "best_stage": 11, "score_round": 96.7, "soh_round": 94.8, "cap_round": 4.064, "ir_round": 18.26, "sd_round": 0.78, "th_round": 2.02, "v_round": 3.702}, {"id": "BX21700-060", "best_stage": 2, "score_round": 97.5, "soh_round": 95.0, "cap_round": 4.071, "ir_round": 18.21, "sd_round": 0.76, "th_round": 2.08, "v_round": 3.701}, {"id": "BX21700-061", "best_stage": 6, "score_round": 98.7, "soh_round": 94.7, "cap_round": 4.072, "ir_round": 18.24, "sd_round": 0.77, "th_round": 2.1, "v_round": 3.702}, {"id": "BX21700-062", "best_stage": 3, "score_round": 93.2, "soh_round": 95.2, "cap_round": 4.074, "ir_round": 18.4, "sd_round": 0.86, "th_round": 2.11, "v_round": 3.702}, {"id": "BX21700-063", "best_stage": 4, "score_round": 97.6, "soh_round": 94.6, "cap_round": 4.072, "ir_round": 18.27, "sd_round": 0.75, "th_round": 2.09, "v_round": 3.701}, {"id": "BX21700-064", "best_stage": 2, "score_round": 97.9, "soh_round": 94.9, "cap_round": 4.069, "ir_round": 18.26, "sd_round": 0.78, "th_round": 2.08, "v_round": 3.7}];
+  const donorLot = [{"id": "BX21700-001", "status": "locked", "score_round": 95.9, "soh_round": 94.6, "ir_round": 18.23, "coord": "R01-C01"}, {"id": "BX21700-002", "status": "locked", "score_round": 98.1, "soh_round": 94.7, "ir_round": 18.22, "coord": "R01-C02"}, {"id": "BX21700-003", "status": "locked", "score_round": 93.7, "soh_round": 95.4, "ir_round": 18.25, "coord": "R01-C03"}, {"id": "BX21700-004", "status": "locked", "score_round": 95.4, "soh_round": 94.6, "ir_round": 18.3, "coord": "R01-C04"}, {"id": "BX21700-005", "status": "locked", "score_round": 96.3, "soh_round": 94.8, "ir_round": 18.24, "coord": "R01-C05"}, {"id": "BX21700-006", "status": "locked", "score_round": 91.6, "soh_round": 95.2, "ir_round": 18.34, "coord": "R01-C06"}, {"id": "BX21700-007", "status": "locked", "score_round": 93.7, "soh_round": 95.0, "ir_round": 18.09, "coord": "R01-C07"}, {"id": "BX21700-008", "status": "locked", "score_round": 92.1, "soh_round": 94.8, "ir_round": 18.4, "coord": "R01-C08"}, {"id": "BX21700-009", "status": "locked", "score_round": 94.0, "soh_round": 95.3, "ir_round": 18.18, "coord": "R02-C01"}, {"id": "BX21700-010", "status": "locked", "score_round": 95.3, "soh_round": 95.1, "ir_round": 18.35, "coord": "R02-C02"}, {"id": "BX21700-011", "status": "locked", "score_round": 95.0, "soh_round": 94.8, "ir_round": 18.22, "coord": "R02-C03"}, {"id": "BX21700-012", "status": "locked", "score_round": 95.7, "soh_round": 95.2, "ir_round": 18.26, "coord": "R02-C04"}, {"id": "BX21700-013", "status": "locked", "score_round": 95.2, "soh_round": 94.9, "ir_round": 18.19, "coord": "R02-C05"}, {"id": "BX21700-014", "status": "locked", "score_round": 94.1, "soh_round": 94.8, "ir_round": 18.21, "coord": "R02-C06"}, {"id": "BX21700-015", "status": "locked", "score_round": 97.6, "soh_round": 95.0, "ir_round": 18.28, "coord": "R02-C07"}, {"id": "BX21700-016", "status": "locked", "score_round": 94.6, "soh_round": 94.8, "ir_round": 18.17, "coord": "R02-C08"}, {"id": "BX21700-017", "status": "locked", "score_round": 96.6, "soh_round": 94.7, "ir_round": 18.24, "coord": "R03-C01"}, {"id": "BX21700-018", "status": "locked", "score_round": 97.7, "soh_round": 94.9, "ir_round": 18.26, "coord": "R03-C02"}, {"id": "BX21700-019", "status": "locked", "score_round": 96.4, "soh_round": 95.1, "ir_round": 18.3, "coord": "R03-C03"}, {"id": "BX21700-020", "status": "locked", "score_round": 94.9, "soh_round": 94.7, "ir_round": 18.22, "coord": "R03-C04"}, {"id": "BX21700-021", "status": "locked", "score_round": 98.4, "soh_round": 94.6, "ir_round": 18.29, "coord": "R03-C05"}, {"id": "BX21700-022", "status": "locked", "score_round": 93.2, "soh_round": 94.8, "ir_round": 18.32, "coord": "R03-C06"}, {"id": "BX21700-023", "status": "locked", "score_round": 96.5, "soh_round": 95.1, "ir_round": 18.2, "coord": "R03-C07"}, {"id": "BX21700-024", "status": "locked", "score_round": 95.9, "soh_round": 94.7, "ir_round": 18.2, "coord": "R03-C08"}, {"id": "BX21700-025", "status": "locked", "score_round": 96.2, "soh_round": 94.8, "ir_round": 18.17, "coord": "R04-C01"}, {"id": "BX21700-026", "status": "locked", "score_round": 96.1, "soh_round": 95.0, "ir_round": 18.25, "coord": "R04-C02"}, {"id": "BX21700-027", "status": "locked", "score_round": 96.5, "soh_round": 94.9, "ir_round": 18.31, "coord": "R04-C03"}, {"id": "BX21700-028", "status": "locked", "score_round": 95.6, "soh_round": 94.7, "ir_round": 18.19, "coord": "R04-C04"}, {"id": "BX21700-029", "status": "locked", "score_round": 96.3, "soh_round": 94.6, "ir_round": 18.27, "coord": "R04-C05"}, {"id": "BX21700-030", "status": "locked", "score_round": 96.4, "soh_round": 95.2, "ir_round": 18.17, "coord": "R04-C06"}, {"id": "BX21700-031", "status": "locked", "score_round": 95.9, "soh_round": 94.9, "ir_round": 18.32, "coord": "R04-C07"}, {"id": "BX21700-032", "status": "locked", "score_round": 95.1, "soh_round": 94.8, "ir_round": 18.26, "coord": "R04-C08"}, {"id": "BX21700-033", "status": "locked", "score_round": 97.0, "soh_round": 94.9, "ir_round": 18.19, "coord": "R05-C01"}, {"id": "BX21700-034", "status": "locked", "score_round": 97.5, "soh_round": 94.7, "ir_round": 18.25, "coord": "R05-C02"}, {"id": "BX21700-035", "status": "locked", "score_round": 95.6, "soh_round": 94.8, "ir_round": 18.32, "coord": "R05-C03"}, {"id": "BX21700-036", "status": "locked", "score_round": 96.0, "soh_round": 94.8, "ir_round": 18.33, "coord": "R05-C04"}, {"id": "BX21700-037", "status": "locked", "score_round": 95.3, "soh_round": 95.3, "ir_round": 18.33, "coord": "R05-C05"}, {"id": "BX21700-038", "status": "locked", "score_round": 92.4, "soh_round": 95.2, "ir_round": 18.12, "coord": "R05-C06"}, {"id": "BX21700-039", "status": "locked", "score_round": 96.1, "soh_round": 94.5, "ir_round": 18.17, "coord": "R05-C07"}, {"id": "BX21700-040", "status": "locked", "score_round": 97.6, "soh_round": 94.9, "ir_round": 18.3, "coord": "R05-C08"}, {"id": "BX21700-041", "status": "locked", "score_round": 96.4, "soh_round": 95.3, "ir_round": 18.25, "coord": "R06-C01"}, {"id": "BX21700-042", "status": "locked", "score_round": 96.1, "soh_round": 94.8, "ir_round": 18.28, "coord": "R06-C02"}, {"id": "BX21700-043", "status": "locked", "score_round": 94.5, "soh_round": 95.0, "ir_round": 18.39, "coord": "R06-C03"}, {"id": "BX21700-044", "status": "locked", "score_round": 93.5, "soh_round": 94.7, "ir_round": 18.11, "coord": "R06-C04"}, {"id": "BX21700-045", "status": "locked", "score_round": 95.0, "soh_round": 95.0, "ir_round": 18.4, "coord": "R06-C05"}, {"id": "BX21700-046", "status": "locked", "score_round": 93.5, "soh_round": 95.0, "ir_round": 18.34, "coord": "R06-C06"}, {"id": "BX21700-047", "status": "locked", "score_round": 96.1, "soh_round": 95.1, "ir_round": 18.29, "coord": "R06-C07"}, {"id": "BX21700-048", "status": "locked", "score_round": 94.0, "soh_round": 95.1, "ir_round": 18.14, "coord": "R06-C08"}, {"id": "BX21700-049", "status": "locked", "score_round": 92.8, "soh_round": 95.1, "ir_round": 18.12, "coord": "R07-C01"}, {"id": "BX21700-050", "status": "locked", "score_round": 93.6, "soh_round": 94.9, "ir_round": 18.36, "coord": "R07-C02"}, {"id": "BX21700-051", "status": "locked", "score_round": 96.7, "soh_round": 95.1, "ir_round": 18.22, "coord": "R07-C03"}, {"id": "BX21700-052", "status": "locked", "score_round": 94.4, "soh_round": 94.7, "ir_round": 18.26, "coord": "R07-C04"}, {"id": "BX21700-053", "status": "locked", "score_round": 95.8, "soh_round": 94.9, "ir_round": 18.18, "coord": "R07-C05"}, {"id": "BX21700-054", "status": "locked", "score_round": 97.6, "soh_round": 95.1, "ir_round": 18.24, "coord": "R07-C06"}, {"id": "BX21700-055", "status": "locked", "score_round": 98.3, "soh_round": 95.2, "ir_round": 18.26, "coord": "R07-C07"}, {"id": "BX21700-056", "status": "locked", "score_round": 96.6, "soh_round": 94.8, "ir_round": 18.31, "coord": "R07-C08"}, {"id": "BX21700-057", "status": "reserve", "score_round": 94.8, "soh_round": 94.6, "ir_round": 18.27, "coord": "R08-C01"}, {"id": "BX21700-058", "status": "reserve", "score_round": 92.0, "soh_round": 94.9, "ir_round": 18.13, "coord": "R08-C02"}, {"id": "BX21700-059", "status": "reserve", "score_round": 96.7, "soh_round": 94.8, "ir_round": 18.26, "coord": "R08-C03"}, {"id": "BX21700-060", "status": "reserve", "score_round": 97.5, "soh_round": 95.0, "ir_round": 18.21, "coord": "R08-C04"}, {"id": "BX21700-061", "status": "reserve", "score_round": 98.7, "soh_round": 94.7, "ir_round": 18.24, "coord": "R08-C05"}, {"id": "BX21700-062", "status": "reserve", "score_round": 93.2, "soh_round": 95.2, "ir_round": 18.4, "coord": "R08-C06"}, {"id": "BX21700-063", "status": "reserve", "score_round": 97.6, "soh_round": 94.6, "ir_round": 18.27, "coord": "R08-C07"}, {"id": "BX21700-064", "status": "reserve", "score_round": 97.9, "soh_round": 94.9, "ir_round": 18.26, "coord": "R08-C08"}, {"id": "BX21700-065", "status": "excluded", "score_round": 82.9, "soh_round": 92.6, "ir_round": 18.5, "reason": "IR outlier", "coord": "R09-C01"}, {"id": "BX21700-066", "status": "excluded", "score_round": 82.2, "soh_round": 92.4, "ir_round": 18.54, "reason": "self-discharge drift", "coord": "R09-C02"}, {"id": "BX21700-067", "status": "excluded", "score_round": 81.5, "soh_round": 92.2, "ir_round": 18.58, "reason": "thermal rise outlier", "coord": "R09-C03"}, {"id": "BX21700-068", "status": "excluded", "score_round": 80.8, "soh_round": 92.0, "ir_round": 18.62, "reason": "capacity floor", "coord": "R09-C04"}, {"id": "BX21700-069", "status": "excluded", "score_round": 80.1, "soh_round": 91.8, "ir_round": 18.66, "reason": "IR outlier", "coord": "R09-C05"}, {"id": "BX21700-070", "status": "excluded", "score_round": 79.4, "soh_round": 91.6, "ir_round": 18.7, "reason": "thermal rise outlier", "coord": "R09-C06"}, {"id": "BX21700-071", "status": "excluded", "score_round": 78.7, "soh_round": 91.4, "ir_round": 18.74, "reason": "self-discharge drift", "coord": "R09-C07"}, {"id": "BX21700-072", "status": "excluded", "score_round": 78.0, "soh_round": 91.2, "ir_round": 18.78, "reason": "combined outlier", "coord": "R09-C08"}];
+
+  let currentLayer = 'optimal';
+  let selectedId = cells[0].id;
+
+  const layerButtons = document.querySelectorAll('.toggle');
+  const seriesHeader = document.getElementById('seriesHeader');
+  const map = document.getElementById('cellMap');
+
+  function gradeFromScore(score) {
+    if(score >= 95) return 'Grade A+';
+    if(score >= 92) return 'Grade A';
+    if(score >= 88) return 'Grade B';
+    return 'Review';
+  }
+  function clamp(val,min,max) { return Math.min(max, Math.max(min,val)); }
+  function metricPct(delta, window) { return clamp(1 - Math.abs(delta)/window, 0, 1); }
+  function colorFromPct(pct) {
+    if(pct > .86) return ['#e7f7ef','#bfe8d0','#0a9a5d'];
+    if(pct > .66) return ['#fff3dd','#efddb7','#c77b0d'];
+    return ['#eef4fb','#d7e6ff','#1657e8'];
+  }
+
+  function layerData(cell) {
+    if(currentLayer === 'optimal') {
+      return { main: cell.score_round.toFixed(1), sub: 'StageFit ' + cell.stage_fit.toFixed(1), foot: 'BUILD LOCKED', pct: cell.score_round/100 };
+    }
+    if(currentLayer === 'score') {
+      return { main: cell.score_round.toFixed(1), sub: gradeFromScore(cell.score_round), foot: 'CELLSCORE', pct: cell.score_round/100 };
+    }
+    if(currentLayer === 'capacity') {
+      const pct = metricPct(cell.d_cap_round, 0.025);
+      return { main: cell.cap_round.toFixed(3) + ' Ah', sub: 'Δ ' + cell.d_cap_round.toFixed(3) + ' Ah', foot: 'CAPACITY', pct };
+    }
+    if(currentLayer === 'resistance') {
+      const pct = metricPct(cell.d_ir_round, 0.22);
+      return { main: cell.ir_round.toFixed(2) + ' mΩ', sub: 'Δ ' + cell.d_ir_round.toFixed(2) + ' mΩ', foot: 'IMPEDANCE', pct };
+    }
+    if(currentLayer === 'thermal') {
+      const pct = metricPct(cell.d_th_round, 0.14);
+      return { main: cell.th_round.toFixed(2) + ' °C', sub: 'Δ ' + cell.d_th_round.toFixed(2) + ' °C', foot: 'THERMAL', pct };
+    }
+    if(currentLayer === 'voltage') {
+      const pct = metricPct(cell.d_v_mv_round, 2.5);
+      return { main: cell.v_round.toFixed(3) + ' V', sub: 'Δ ' + cell.d_v_mv_round.toFixed(1) + ' mV', foot: 'VOLTAGE', pct };
+    }
+    if(currentLayer === 'selfdischarge') {
+      const pct = metricPct(cell.d_sd_round, 0.12);
+      return { main: cell.sd_round.toFixed(2) + ' mV', sub: 'Δ ' + cell.d_sd_round.toFixed(2) + ' mV/day', foot: 'SELF-DISCHARGE', pct };
+    }
+  }
+
+  function renderSeriesHeader() {
+    seriesHeader.innerHTML = '<div></div>' + stageHeaders.map(h => `
+      <div class="series-label">
+        <div class="s">S${String(h.series).padStart(2,'0')}</div>
+        <div class="f">${h.fit.toFixed(1)}</div>
+      </div>`).join('');
+  }
+
+  function renderMap() {
+    map.innerHTML = '';
+    for(let p = 1; p <= 4; p++) {
+      const row = document.createElement('div');
+      row.className = 'map-row';
+      row.innerHTML = `<div class="row-label">P${p}</div>`;
+      for(let s = 1; s <= 14; s++) {
+        const cell = cells.find(c => c.parallel === p && c.series === s);
+        const view = layerData(cell);
+        const [bg, border] = colorFromPct(view.pct);
+        const div = document.createElement('div');
+        div.className = 'cell' + (cell.id === selectedId ? ' selected' : '');
+        div.style.background = bg;
+        div.style.borderColor = border;
+        div.innerHTML = `
+          <div class="top">
+            <div class="id">${cell.id}</div>
+            <span class="pin" style="background:#0a9a5d"></span>
+          </div>
+          <div class="main">${view.main}</div>
+          <div class="sub">${view.sub}</div>
+          <div class="foot">${view.foot}</div>`;
+        div.onclick = () => {
+          selectedId = cell.id;
+          renderMap();
+          updateDetail(cell);
+        };
+        row.appendChild(div);
+      }
+      map.appendChild(row);
+    }
+  }
+
+  function updateDetail(cell) {
+    const stage = stageRows.find(r => r.series === cell.series);
+    document.getElementById('detailTitle').textContent = `${cell.id} · S${String(cell.series).padStart(2,'0')}-P${cell.parallel}`;
+    document.getElementById('detailSubtitle').textContent = `Locked into stage S${String(cell.series).padStart(2,'0')} because its weighted deviation profile minimized stage spread while preserving reserve coverage and the build-lock threshold.`;
+    document.getElementById('detailGrade').textContent = gradeFromScore(cell.score_round);
+    document.getElementById('statSoh').textContent = cell.soh_round.toFixed(1) + '%';
+    document.getElementById('statCap').textContent = cell.cap_round.toFixed(3) + ' Ah';
+    document.getElementById('statIr').textContent = cell.ir_round.toFixed(2) + ' mΩ';
+    document.getElementById('statTh').textContent = cell.th_round.toFixed(2) + ' °C';
+    document.getElementById('statSd').textContent = cell.sd_round.toFixed(2) + ' mV/day';
+    document.getElementById('statV').textContent = cell.v_round.toFixed(3) + ' V';
+    document.getElementById('statDV').textContent = (cell.d_v_mv_round >= 0 ? '+' : '') + cell.d_v_mv_round.toFixed(1) + ' mV';
+    document.getElementById('statReserve').textContent = cell.reserve_id;
+    document.getElementById('cellScore').textContent = cell.score_round.toFixed(1);
+    document.getElementById('cellScoreBar').style.width = cell.score_round.toFixed(1) + '%';
+    document.getElementById('stageInfo').textContent = `StageFit ${stage.fit.toFixed(1)} · stage ΔV ${stage.dv_mv.toFixed(1)} mV · stage ΔIR ${stage.dir_mohm.toFixed(2)} mΩ · reserve ${stage.reserve_id}`;
+    document.getElementById('cellReason').textContent = `This cell sits at ΔCapacity ${cell.d_cap_round.toFixed(3)} Ah, ΔImpedance ${cell.d_ir_round.toFixed(2)} mΩ, ΔSelf-discharge ${cell.d_sd_round.toFixed(2)} mV/day, ΔThermal ${cell.d_th_round.toFixed(2)} °C, and ΔVoltage ${cell.d_v_mv_round.toFixed(1)} mV relative to the stage centroid, which keeps stage S${String(cell.series).padStart(2,'0')} inside the locked build window.`;
+  }
+
+  function renderStageTable() {
+    document.getElementById('stageTable').innerHTML = stageRows.map(r => `
+      <tr>
+        <td>S${String(r.series).padStart(2,'0')}</td>
+        <td class="good">${r.fit.toFixed(1)}</td>
+        <td>${r.dv_mv.toFixed(1)} mV</td>
+        <td>${r.dir_mohm.toFixed(2)} mΩ</td>
+        <td>${r.dth_c.toFixed(2)} °C</td>
+        <td>${r.dcap_ah.toFixed(3)} Ah</td>
+        <td>${r.reserve_id}</td>
+      </tr>`).join('');
+  }
+
+  function renderReserveRack() {
+    document.getElementById('reserveGrid').innerHTML = reserves.map(r => `
+      <div class="reserve-card">
+        <div class="top">
+          <div class="id">${r.id}</div>
+          <div class="score">${r.score_round.toFixed(1)}</div>
+        </div>
+        <div class="meta">
+          SOH ${r.soh_round.toFixed(1)}% · ${r.cap_round.toFixed(3)} Ah · ${r.ir_round.toFixed(2)} mΩ<br>
+          ${r.th_round.toFixed(2)} °C thermal rise · ${r.v_round.toFixed(3)} V after rest
+        </div>
+        <div class="tag">Closest stage · S${String(r.best_stage).padStart(2,'0')}</div>
+      </div>`).join('');
+  }
+
+  function lotCellColors(status) {
+    if(status === 'locked') return ['#e7f7ef','#bfe8d0','#0a9a5d'];
+    if(status === 'reserve') return ['#eef4fb','#d7e6ff','#1657e8'];
+    return ['#fbecef','#f3c9cf','#d44b55'];
+  }
+
+  function renderLot() {
+    document.getElementById('lotGrid').innerHTML = donorLot.map(item => {
+      const [bg,border,pin] = lotCellColors(item.status);
+      const label = item.status === 'locked' ? 'LOCKED BUILD' : item.status === 'reserve' ? 'RESERVE' : 'EXCLUDED';
+      const sub = item.status === 'excluded'
+        ? item.reason
+        : `Score ${item.score_round.toFixed(1)} · SOH ${item.soh_round.toFixed(1)}%`;
+      return `
+      <div class="lot-cell" style="background:${bg};border-color:${border}">
+        <div class="top">
+          <div class="id">${item.id}</div>
+          <span class="pin" style="background:${pin}"></span>
+        </div>
+        <div class="main">${item.coord}</div>
+        <div class="sub">${sub}</div>
+        <div class="foot">${label}</div>
+      </div>`;
+    }).join('');
+  }
+
+  layerButtons.forEach(btn => btn.addEventListener('click', () => {
+    layerButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentLayer = btn.dataset.layer;
+    renderMap();
+  }));
+
+  renderSeriesHeader();
+  renderMap();
+  renderStageTable();
+  renderReserveRack();
+  renderLot();
+  updateDetail(cells[0]);
+</script>
+</body>
+</html>

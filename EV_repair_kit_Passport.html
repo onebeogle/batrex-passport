@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BATReX Repair Match Passport</title>
+<style>
+:root{
+  --bg:#edf3f8; --panel:#ffffff; --line:#d8e1eb; --ink:#0c1730; --muted:#5d6d84;
+  --navy:#0f1f3d; --blue:#1e5be0; --blue-bg:#ebf2ff; --green:#0f9c60; --green-bg:#e7f7ef;
+  --amber:#b87412; --amber-bg:#fff4df; --red:#cc3e4a; --red-bg:#ffeaed; --purple:#7857d6; --purple-bg:#f1edff;
+  --shadow:0 18px 40px rgba(9,20,38,.08); --radius:22px; --radius-sm:16px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#edf3f8,#f9fbfd);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}
+.wrap{max-width:1660px;margin:0 auto;padding:18px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;position:sticky;top:10px;z-index:30;background:rgba(255,255,255,.92);backdrop-filter:blur(12px)}
+.brand{display:flex;gap:14px;align-items:center}
+.brand-logo{height:56px;width:auto;display:block}
+.brand h1{margin:0;font-size:18px}
+.brand p{margin:4px 0 0;font-size:12px;color:var(--muted)}
+.row{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;margin-top:18px}
+.hero{padding:28px}
+.eyebrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:999px;font-size:12px;font-weight:800;border:1px solid transparent}
+.green{background:var(--green-bg);color:var(--green);border-color:#cdebd9}
+.blue{background:var(--blue-bg);color:var(--blue);border-color:#d3e0ff}
+.amber{background:var(--amber-bg);color:var(--amber);border-color:#f0dfbf}
+.red{background:var(--red-bg);color:var(--red);border-color:#f3cbd1}
+h2{margin:16px 0 10px;font-size:42px;letter-spacing:-.05em;line-height:1.02}
+.lead{font-size:16px;line-height:1.72;color:#3f4f67;max-width:900px}
+.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:20px}
+.metric{border:1px solid var(--line);border-radius:18px;padding:16px;background:linear-gradient(180deg,#fff,#f8fbff)}
+.metric .k{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:800}
+.metric .v{font-size:28px;font-weight:950;letter-spacing:-.04em;margin-top:8px}
+.metric .s{font-size:12px;line-height:1.45;color:#5b6a82;margin-top:5px}
+.sidebar{padding:22px;background:linear-gradient(180deg,#0d182b,#142445);color:#eef4ff;position:relative;overflow:hidden}
+.sidebar:before{content:"";position:absolute;right:-100px;top:-70px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(39,194,115,.22),transparent 70%)}
+.sidebar h3{margin:0;font-size:14px;color:#adc0e1;text-transform:uppercase;letter-spacing:.06em}
+.scorebox{display:grid;grid-template-columns:170px 1fr;gap:20px;align-items:center;margin-top:14px}
+.ringwrap{position:relative;width:170px;height:170px}
+.ring{width:170px;height:170px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#2bc877 0deg,#2bc877 338.4deg,rgba(255,255,255,.14) 338.4deg)}
+.ring:after{content:"";position:absolute;inset:18px;border-radius:50%;background:#12203a;border:1px solid rgba(255,255,255,.08)}
+.ringin{position:absolute;inset:0;display:grid;place-items:center;text-align:center;z-index:1}
+.ringin .big{font-size:42px;font-weight:950}
+.ringin .tiny{font-size:12px;color:#b9c7e6;text-transform:uppercase;letter-spacing:.06em;font-weight:800}
+.release{font-size:46px;font-weight:950;line-height:1;letter-spacing:-.05em}
+.releasesub{margin-top:10px;font-size:15px;line-height:1.7;color:#d5dff3}
+.sidegrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}
+.sidecard{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px}
+.sidecard .k{font-size:12px;color:#aab9d8;text-transform:uppercase;letter-spacing:.06em;font-weight:800}
+.sidecard .v{font-size:20px;font-weight:900;margin-top:8px}
+.sidecard .s{font-size:12px;line-height:1.45;color:#d4def3;margin-top:4px}
+.section{padding:22px}
+.section h3{margin:0;font-size:26px;letter-spacing:-.04em}
+.sub{margin:8px 0 0;font-size:14px;color:#44546c;line-height:1.65}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.card{border:1px solid var(--line);border-radius:18px;padding:18px;background:#fff}
+.card .t{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:800}
+.card .v{font-size:22px;font-weight:950;margin-top:8px;letter-spacing:-.03em}
+.card .s{font-size:13px;line-height:1.55;color:#58687f;margin-top:6px}
+.coveragebox{display:grid;grid-template-columns: .8fr 1.2fr;gap:12px;margin-top:16px}
+.coverage-card{border:1px solid var(--line);border-radius:20px;padding:20px;background:linear-gradient(180deg,#fff,#fbfdff)}
+.coverage-card h4{margin:0;font-size:18px}
+.coverage-list{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:10px}
+.coverage-list li{padding-left:18px;position:relative;font-size:14px;line-height:1.55;color:#415168}
+.coverage-list li:before{content:"";position:absolute;left:0;top:8px;width:8px;height:8px;border-radius:50%;background:#2bc877}
+.coverage-list li.excl:before{background:#cc3e4a}
+.option-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.option{border:1px solid var(--line);border-radius:20px;padding:18px;background:linear-gradient(180deg,#fff,#fbfdff)}
+.option.active{border-color:var(--blue);box-shadow:0 0 0 3px rgba(30,91,224,.09),0 14px 30px rgba(9,20,38,.08)}
+.option .head{display:flex;justify-content:space-between;gap:10px}
+.option .name{font-size:20px;font-weight:950}
+.option .tag{font-size:12px;font-weight:800;padding:6px 10px;border-radius:999px}
+.option .tag.rel{background:var(--green-bg);color:var(--green)}
+.option .tag.val{background:var(--blue-bg);color:var(--blue)}
+.option .tag.cost{background:var(--amber-bg);color:var(--amber)}
+.option .desc{font-size:13px;color:#58687f;line-height:1.55;margin-top:6px}
+.option-metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+.tile{padding:12px;border-radius:14px;border:1px solid var(--line);background:#fff}
+.tile .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:800}
+.tile .v{font-size:19px;font-weight:950;margin-top:8px}
+.tile .s{font-size:12px;line-height:1.45;color:#5b6a82;margin-top:4px}
+.option ul{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:8px}
+.option li{padding-left:18px;position:relative;font-size:13px;color:#415168;line-height:1.5}
+.option li:before{content:"";position:absolute;left:0;top:8px;width:8px;height:8px;border-radius:50%;background:#2bc877}
+.btnrow{display:flex;gap:10px;margin-top:14px}
+.btn{flex:1;padding:12px 14px;border-radius:14px;border:1px solid var(--line);font-weight:900;background:#fff;color:#11213d}
+.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.passport{padding:22px}
+.passport h3{margin:0;font-size:28px}
+.passgrid{display:grid;grid-template-columns:1.05fr .95fr;gap:16px;margin-top:16px}
+.block{border:1px solid var(--line);border-radius:18px;padding:18px;background:#fff}
+.block h4{margin:0;font-size:16px}
+.block p{margin:6px 0 0;font-size:13px;color:#57677f;line-height:1.55}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+.stat{border:1px solid var(--line);border-radius:14px;padding:12px;background:linear-gradient(180deg,#fff,#f8fbfd)}
+.stat .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:800}
+.stat .v{font-size:20px;font-weight:950;margin-top:8px}
+.stat .s{font-size:12px;color:#5b6a82;line-height:1.45;margin-top:4px}
+.formula{margin-top:14px;border-radius:16px;background:linear-gradient(180deg,#0f1b31,#162444);color:#eef4ff;padding:16px;border:1px solid rgba(255,255,255,.08)}
+.formula .title{font-size:12px;color:#b9c8e8;text-transform:uppercase;letter-spacing:.06em;font-weight:800}
+.formula pre{margin:10px 0 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;line-height:1.8;white-space:pre-wrap}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.tab{padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#fff;font-size:13px;font-weight:800;color:#33435a;cursor:pointer}
+.tab.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.mappanel{display:none;margin-top:14px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,#fcfdff,#f6f9fc);padding:18px}
+.mappanel.active{display:block}
+.maphead{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.maphead h4{margin:0;font-size:18px}
+.maphead p{margin:6px 0 0;font-size:13px;line-height:1.55;color:#58687f;max-width:900px}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:#47566f;font-weight:800}
+.legend .item{display:flex;gap:6px;align-items:center}
+.sw{width:10px;height:10px;border-radius:50%}
+.sw.keep{background:#cfd8e4}.sw.replace{background:var(--amber)}.sw.watch{background:var(--red)}.sw.donor{background:var(--purple)}.sw.selected{background:var(--green)}.sw.reserve{background:var(--blue)}
+.packgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.module{border:1px solid var(--line);border-radius:18px;padding:14px;background:#fff}
+.modulehead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.moduleid{font-size:14px;font-weight:900;letter-spacing:.04em}
+.moduletag{font-size:11px;font-weight:800;padding:6px 8px;border-radius:999px}
+.moduletag.normal{background:#f3f6fa;color:#55657d}
+.moduletag.replace{background:var(--amber-bg);color:var(--amber)}
+.moduletag.watch{background:var(--red-bg);color:var(--red)}
+.moduletag.donor{background:var(--purple-bg);color:var(--purple)}
+.cellgrid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
+.cell{min-height:66px;border-radius:12px;border:1px solid var(--line);padding:7px 6px;display:flex;flex-direction:column;justify-content:space-between;background:#fff}
+.cell .id{font-size:10px;font-weight:900;color:#21324e}
+.cell .main{font-size:15px;font-weight:950;letter-spacing:-.03em;line-height:1}
+.cell .meta{font-size:9px;color:#61718a;line-height:1.25;font-weight:800;text-transform:uppercase}
+.cell.keep{background:#fff}
+.cell.replace{background:linear-gradient(180deg,#fff9ef,#fff3dd);border-color:#efd9ae}
+.cell.watch{background:linear-gradient(180deg,#fff0f2,#ffe8eb);border-color:#f4c7ce}
+.cell.selected{background:linear-gradient(180deg,#eef8f2,#e7f7ef);border-color:#cbeed8}
+.cell.reserve{background:linear-gradient(180deg,#eef4ff,#e9f1ff);border-color:#d5e3ff}
+.cell.donorhit{background:linear-gradient(180deg,#f5f0ff,#efe8ff);border-color:#dbcef9}
+.table{overflow:auto;margin-top:14px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+@media (max-width:1300px){
+  .row,.passgrid,.coveragebox{grid-template-columns:1fr}
+  .metrics,.cards,.option-grid,.packgrid,.stats{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:900px){
+  .metrics,.cards,.option-grid,.packgrid,.stats{grid-template-columns:1fr}
+  .scorebox{grid-template-columns:1fr}
+  .cellgrid{grid-template-columns:repeat(4,1fr)}
+}
+
+
+/* portability + touch + phone fixes */
+.brand{min-width:0;flex:1 1 360px}
+.brand-logo{height:auto;max-height:56px;max-width:min(36vw,220px);object-fit:contain;flex:0 0 auto}
+.topbar{flex-wrap:wrap}
+.topbar .eyebrow{justify-content:flex-end;flex:1 1 320px}
+.btn{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.option,.btn,.tab{transition:all .18s ease}
+.option.active{transform:translateY(-1px)}
+
+@media (max-width:900px){
+  .wrap{padding:12px}
+  .topbar{position:static;padding:14px}
+  .brand{width:100%;gap:10px;align-items:center}
+  .topbar .eyebrow{width:100%;justify-content:flex-start}
+  .brand-logo{max-height:none;width:min(60vw,260px);max-width:100%}
+  .brand h1{font-size:16px}
+  .brand p{font-size:11px}
+  h2{font-size:32px;line-height:1.06}
+  .lead{font-size:15px;line-height:1.62}
+  .release{font-size:38px}
+  .ringwrap,.ring{width:150px;height:150px}
+  .ring:after{inset:16px}
+}
+
+@media (max-width:560px){
+  .brand{flex-wrap:wrap}
+  .brand-logo{width:min(74vw,280px)}
+  .chip{font-size:11px;padding:8px 10px}
+  h2{font-size:28px}
+  .section,.passport,.hero,.sidebar{padding:18px}
+  .metric .v{font-size:24px}
+  .cell .main{font-size:13px}
+  .cell .meta{font-size:8px}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="panel topbar">
+    <div class="brand">
+      <img class="brand-logo" src="data:image/png;base64,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" loading="eager" decoding="async" alt="BATReX logo">
+      <div>
+        <h1>BATReX Certified Repair Match</h1>
+        <p>Digital Battery Passport · cell-level repair kit</p>
+      </div>
+    </div>
+    <div class="eyebrow">
+      <span class="chip green">Repair eligible</span>
+      <span class="chip blue">Case ID · BX-RK-GA-260407-0142</span>
+      <span class="chip amber">Third-party insurance carrier · policy attached</span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="panel hero">
+      <div class="eyebrow">
+        <span class="chip green">BATReX installed-cell protection active</span>
+        <span class="chip blue">Recipient pack cluster locked</span>
+      </div>
+      <h2>Matched donor cells selected for this exact repair location</h2>
+      <div class="lead">BATReX screened the surviving recipient cells, mapped the donor pack’s impact history, excluded donor cells from the donor impact zone, and selected the highest-fit replacement cohort for the exact installation coordinates inside the recipient pack. The selected set below is tied to the live pack cluster, install location, and installed-cell protection terms.</div>
+      <div class="metrics">
+        <div class="metric"><div class="k">Recipient vehicle</div><div class="v">2014 Model S 85</div><div class="s">NCA · 18650 · 128,440 mi</div></div>
+        <div class="metric"><div class="k">Install coordinates</div><div class="v">M07 · C11–C18</div><div class="s">8 matched cells selected</div></div>
+        <div class="metric"><div class="k">Compatibility score</div><div class="v">94 / 100</div><div class="s">Lowest pack-balance risk</div></div>
+        <div class="metric"><div class="k">Coverage term</div><div class="v">18 mo / 18k mi</div><div class="s">BATReX installed-cell protection</div></div>
+        <div class="metric"><div class="k">Kit price</div><div class="v">$1,620</div><div class="s">Post-install verification included</div></div>
+      </div>
+    </div>
+    <div class="panel sidebar">
+      <h3>Selected release status</h3>
+      <div class="scorebox">
+        <div class="ringwrap">
+          <div class="ring"></div>
+          <div class="ringin"><div class="big">94</div><div class="tiny">Build fit</div></div>
+        </div>
+        <div>
+          <div class="release">Release</div>
+          <div class="releasesub">Recipient pack balance window, donor impact exclusion, donor traceability, and installed-cell protection terms all passed. This cohort is cleared for the exact target cells inside module M07.</div>
+        </div>
+      </div>
+      <div class="sidegrid">
+        <div class="sidecard"><div class="k">Selected option</div><div class="v">Balanced value</div><div class="s">Strong fit with insurer-friendly price point</div></div>
+        <div class="sidecard"><div class="k">Donor pack</div><div class="v">2015 Model S 85</div><div class="s">72,410 mi · salvage fleet release</div></div>
+        <div class="sidecard"><div class="k">Excluded donor cells</div><div class="v">16</div><div class="s">Removed due to donor-side impact adjacency</div></div>
+        <div class="sidecard"><div class="k">Reserve cells</div><div class="v">4</div><div class="s">Same cohort held for service continuity</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="panel section">
+      <h3>Recipient and donor records</h3>
+      <div class="sub">The repair decision is tied to the recipient pack’s surviving cluster, the donor pack’s impact history, and the exact cells selected for installation.</div>
+      <div class="cards">
+        <div class="card">
+          <div class="t">Recipient vehicle</div>
+          <div class="v">2014 Tesla Model S 85</div>
+          <div class="s">VIN suffix · 7P2148<br>Current mileage · 128,440 mi<br>Fault context · post-collision pack repair<br>DTC snapshot · isolation and pack imbalance flags present</div>
+        </div>
+        <div class="card">
+          <div class="t">Recipient pack condition</div>
+          <div class="v">Localized repair candidate</div>
+          <div class="s">Rear-left enclosure strike localized to module M07. No full enclosure breach detected. No thermal event evidence detected. Surrounding cells retained after BATReX screening.</div>
+        </div>
+        <div class="card">
+          <div class="t">Donor source provenance</div>
+          <div class="v">2015 Tesla Model S 85</div>
+          <div class="s">Donor mileage · 72,410 mi<br>Source channel · salvage fleet release<br>Donor pack ID · DP-18650-MCN-044<br>Harvest station · BX-DIAG-04</div>
+        </div>
+      </div>
+
+      <div class="coveragebox">
+        <div class="coverage-card">
+          <h4>Insurance carrier</h4>
+          <div class="cards" style="grid-template-columns:1fr; margin-top:14px">
+            <div class="card" style="padding:16px">
+              <div class="t">Carrier</div>
+              <div class="v">Progressive</div>
+              <div class="s">Policy class · installed-cell protection rider<br>Insured product · BATReX-supplied matched cell set at approved install coordinates<br>Covered trigger · BATReX-cell-origin failure, BATReX-cell-origin thermal event, or BATReX-cell-caused pack imbalance after documented install and verification</div>
+            </div>
+          </div>
+        </div>
+        <div class="coverage-card">
+          <h4>Covered loss categories</h4>
+          <ul class="coverage-list">
+            <li>Replacement of the failed BATReX-installed matched cell set with a newly matched BATReX release set.</li>
+            <li>Diagnostic teardown, root-cause inspection, and post-incident pack requalification tied to the covered BATReX install zone.</li>
+            <li>Approved reinstall labor for removal, rebalance, and reinstallation of the replacement BATReX cohort.</li>
+            <li>Thermal-event damage to adjacent BATReX-installed cells within the same approved repair zone when origin is traced to the BATReX-installed cell set.</li>
+            <li>Secondary pack-imbalance correction when the verified source is the BATReX-installed cohort and the pack falls outside the BATReX release window during the protection term.</li>
+            <li class="excl">Not covered · later collision damage, flood, enclosure breach, unauthorized pack opening, non-BATReX hardware or BMS modification, or damage proven to originate outside the BATReX-installed cohort.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="option-grid">
+        <div class="option">
+          <div class="head"><div class="name">Option A</div><div class="tag rel">Max reliability</div></div>
+          <div class="desc">Longest term and tightest resistance spread.</div>
+          <div class="option-metrics">
+            <div class="tile"><div class="k">Compatibility</div><div class="v">96 / 100</div><div class="s">Lowest variance</div></div>
+            <div class="tile"><div class="k">Coverage term</div><div class="v">24 / 24</div><div class="s">months / k mi</div></div>
+            <div class="tile"><div class="k">Price</div><div class="v">$1,980</div><div class="s">highest protection</div></div>
+            <div class="tile"><div class="k">Donor mileage</div><div class="v">61,380</div><div class="s">lower aging risk</div></div>
+          </div>
+          <ul>
+            <li>Exact chemistry and form-factor match</li>
+            <li>Lowest resistance spread versus live cluster</li>
+            <li>Strongest insurer-facing protection package</li>
+          </ul>
+          <div class="btnrow"><button class="btn">Select option A</button></div>
+        </div>
+        <div class="option active">
+          <div class="head"><div class="name">Option B</div><div class="tag val">Balanced value</div></div>
+          <div class="desc">Best tradeoff between price, fit, and installed-cell protection.</div>
+          <div class="option-metrics">
+            <div class="tile"><div class="k">Compatibility</div><div class="v">94 / 100</div><div class="s">selected cohort</div></div>
+            <div class="tile"><div class="k">Coverage term</div><div class="v">18 / 18</div><div class="s">months / k mi</div></div>
+            <div class="tile"><div class="k">Price</div><div class="v">$1,620</div><div class="s">strong value</div></div>
+            <div class="tile"><div class="k">Donor mileage</div><div class="v">72,410</div><div class="s">moderate aging risk</div></div>
+          </div>
+          <ul>
+            <li>Excluded cells from donor impact adjacency</li>
+            <li>Low predicted rebalance effort after install</li>
+            <li>Reserve cells held from the same matched cohort</li>
+          </ul>
+          <div class="btnrow"><button class="btn primary">Selected</button></div>
+        </div>
+        <div class="option">
+          <div class="head"><div class="name">Option C</div><div class="tag cost">Lowest upfront cost</div></div>
+          <div class="desc">Lower entry price with shorter protection term.</div>
+          <div class="option-metrics">
+            <div class="tile"><div class="k">Compatibility</div><div class="v">89 / 100</div><div class="s">more spread</div></div>
+            <div class="tile"><div class="k">Coverage term</div><div class="v">12 / 12</div><div class="s">months / k mi</div></div>
+            <div class="tile"><div class="k">Price</div><div class="v">$1,290</div><div class="s">lowest price</div></div>
+            <div class="tile"><div class="k">Donor mileage</div><div class="v">96,880</div><div class="s">higher aging risk</div></div>
+          </div>
+          <ul>
+            <li>Good fit but wider resistance window</li>
+            <li>Shorter installed-cell protection term</li>
+            <li>Best for cost-sensitive repair</li>
+          </ul>
+          <div class="btnrow"><button class="btn">Select option C</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel passport">
+      <h3>Selected option passport</h3>
+      <div class="sub">This passport records the selected donor cohort, the install location inside the recipient pack, the excluded donor-side damage area, and the active installed-cell protection terms.</div>
+      <div class="passgrid">
+        <div>
+          <div class="block">
+            <h4>Repair release summary</h4>
+            <p>Selected cohort cleared for recipient module M07, cells C11–C18. Donor-side impact zone excluded before cell selection. Same-cohort reserve cells held for continuity service.</p>
+            <div class="stats">
+              <div class="stat"><div class="k">Passport ID</div><div class="v">BXP-RK-MCN044-M07</div><div class="s">QR-linked trace record</div></div>
+              <div class="stat"><div class="k">Coverage tier</div><div class="v">Shield Plus</div><div class="s">18 months / 18,000 mi</div></div>
+              <div class="stat"><div class="k">Install coordinates</div><div class="v">M07 C11–C18</div><div class="s">8 selected cells</div></div>
+              <div class="stat"><div class="k">Reserve coordinates</div><div class="v">M05 C03–C06</div><div class="s">4 reserve cells held</div></div>
+            </div>
+          </div>
+          <div class="formula">
+            <div class="title">Release scoring logic</div>
+            <pre>BuildFit = 0.28·VoltageMatch
+         + 0.24·CapacityMatch
+         + 0.24·ResistanceMatch
+         + 0.12·SelfDischargeMatch
+         + 0.12·ThermalStabilityMatch
+
+CoverageTier = f(BuildFit, DonorAgeMileage, InstallVerification)
+
+Release requires:
+1) chemistry and form-factor match
+2) donor impact-zone exclusion
+3) recipient-cluster balance window pass
+4) post-install verification pass</pre>
+          </div>
+        </div>
+        <div>
+          <div class="block">
+            <h4>Diagnostic evidence</h4>
+            <p>Recipient live-cluster comparison performed against surviving cells adjacent to the target install zone. Donor cells selected only from donor modules outside the donor-side impact zone and outside the donor watch ring.</p>
+            <div class="stats">
+              <div class="stat"><div class="k">SOH</div><div class="v">91%</div><div class="s">selected donor cohort mean</div></div>
+              <div class="stat"><div class="k">Internal resistance</div><div class="v">21.4 mΩ</div><div class="s">within release window</div></div>
+              <div class="stat"><div class="k">Self-discharge</div><div class="v">Low drift</div><div class="s">normal relaxation profile</div></div>
+              <div class="stat"><div class="k">Thermal stability</div><div class="v">A-</div><div class="s">passed pulse and drift screening</div></div>
+            </div>
+          </div>
+          <div class="block" style="margin-top:12px">
+            <h4>Why this match</h4>
+            <ul class="coverage-list" style="margin-top:10px">
+              <li>Nearest resistance cluster to the surviving recipient cells adjacent to M07 C11–C18.</li>
+              <li>Donor cells selected only from donor modules outside the donor impact zone shown below.</li>
+              <li>Predicted pack rebalance remained inside the BATReX release threshold after install simulation.</li>
+              <li>Installed-cell protection remains active because the selected cohort, reserve cohort, and install coordinates are all trace-locked.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel section">
+    <h3>Damage, donor harvest, and installation maps</h3>
+    <div class="sub">The maps below show every cell in the recipient repair zone and every cell in the donor modules used in screening. The donor-side damage area stays visible so the customer can see which donor cells were excluded before the matched cohort was chosen.</div>
+    <div class="tabs">
+      <button class="tab active" data-tab="recipient">Recipient pack map</button>
+      <button class="tab" data-tab="donor">Donor pack map</button>
+      <button class="tab" data-tab="selected">Selected install map</button>
+    </div>
+
+    <div class="mappanel active" id="recipient">
+      <div class="maphead">
+        <div>
+          <h4>Recipient pack map</h4>
+          <p>All cells are shown. M07 is the target repair module. C11–C18 are the exact install coordinates. Adjacent cells remain visible so the shop and customer can see the surviving live cluster used for matching.</p>
+        </div>
+        <div class="legend">
+          <span class="item"><span class="sw keep"></span>Retained</span>
+          <span class="item"><span class="sw replace"></span>Replace</span>
+          <span class="item"><span class="sw watch"></span>Watch</span>
+        </div>
+      </div>
+      <div class="packgrid">
+<div class="module"><div class="modulehead"><div class="moduleid">M01</div><div class="moduletag normal">retained</div></div><div class="cellgrid"><div class="cell keep"><div class="id">C01</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C02</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C03</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C04</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C05</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C06</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C07</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C08</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C09</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C10</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C11</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C12</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C13</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C14</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C15</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C16</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C17</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C18</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C19</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C20</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C21</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C22</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C23</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C24</div><div class="main">OK</div><div class="meta">retained</div></div></div></div><div class="module"><div class="modulehead"><div class="moduleid">M02</div><div class="moduletag normal">retained</div></div><div class="cellgrid"><div class="cell keep"><div class="id">C01</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C02</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C03</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C04</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C05</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C06</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C07</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C08</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C09</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C10</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C11</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C12</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C13</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C14</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C15</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C16</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C17</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C18</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C19</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C20</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C21</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C22</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C23</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C24</div><div class="main">OK</div><div class="meta">retained</div></div></div></div><div class="module"><div class="modulehead"><div class="moduleid">M03</div><div class="moduletag normal">retained</div></div><div class="cellgrid"><div class="cell keep"><div class="id">C01</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C02</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C03</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C04</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C05</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C06</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C07</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C08</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C09</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C10</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C11</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C12</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C13</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C14</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C15</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C16</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C17</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C18</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C19</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C20</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C21</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C22</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C23</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C24</div><div class="main">OK</div><div class="meta">retained</div></div></div></div><div class="module"><div class="modulehead"><div class="moduleid">M04</div><div class="moduletag normal">retained</div></div><div class="cellgrid"><div class="cell keep"><div class="id">C01</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C02</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C03</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C04</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C05</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C06</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C07</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C08</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C09</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C10</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C11</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C12</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C13</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C14</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C15</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C16</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C17</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C18</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C19</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C20</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C21</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C22</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C23</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C24</div><div class="main">OK</div><div class="meta">retained</div></div></div></div><div class="module"><div class="modulehead"><div class="moduleid">M05</div><div class="moduletag normal">retained</div></div><div class="cellgrid"><div class="cell keep"><div class="id">C01</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C02</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C03</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C04</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C05</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C06</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C07</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C08</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C09</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C10</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C11</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C12</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C13</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C14</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C15</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C16</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C17</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C18</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C19</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C20</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C21</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C22</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C23</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C24</div><div class="main">OK</div><div class="meta">retained</div></div></div></div><div class="module"><div class="modulehead"><div class="moduleid">M06</div><div class="moduletag normal">retained</div></div><div class="cellgrid"><div class="cell keep"><div class="id">C01</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C02</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C03</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C04</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C05</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C06</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C07</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C08</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C09</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C10</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C11</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C12</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C13</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C14</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C15</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C16</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C17</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C18</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C19</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C20</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C21</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C22</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C23</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C24</div><div class="main">OK</div><div class="meta">retained</div></div></div></div><div class="module"><div class="modulehead"><div class="moduleid">M07</div><div class="moduletag replace">target replace</div></div><div class="cellgrid"><div class="cell keep"><div class="id">C01</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C02</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C03</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C04</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C05</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C06</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C07</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C08</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell watch"><div class="id">C09</div><div class="main">WATCH</div><div class="meta">adjacent</div></div><div class="cell watch"><div class="id">C10</div><div class="main">WATCH</div><div class="meta">adjacent</div></div><div class="cell replace"><div class="id">C11</div><div class="main">SWAP</div><div class="meta">target</div></div><div class="cell replace"><div class="id">C12</div><div class="main">SWAP</div><div class="meta">target</div></div><div class="cell replace"><div class="id">C13</div><div class="main">SWAP</div><div class="meta">target</div></div><div class="cell replace"><div class="id">C14</div><div class="main">SWAP</div><div class="meta">target</div></div><div class="cell replace"><div class="id">C15</div><div class="main">SWAP</div><div class="meta">target</div></div><div class="cell replace"><div class="id">C16</div><div class="main">SWAP</div><div class="meta">target</div></div><div class="cell replace"><div class="id">C17</div><div class="main">SWAP</div><div class="meta">target</div></div><div class="cell replace"><div class="id">C18</div><div class="main">SWAP</div><div class="meta">target</div></div><div class="cell watch"><div class="id">C19</div><div class="main">WATCH</div><div class="meta">adjacent</div></div><div class="cell watch"><div class="id">C20</div><div class="main">WATCH</div><div class="meta">adjacent</div></div><div class="cell keep"><div class="id">C21</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C22</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C23</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C24</div><div class="main">OK</div><div class="meta">retained</div></div></div></div><div class="module"><div class="modulehead"><div class="moduleid">M08</div><div class="moduletag watch">impact adjacency</div></div><div class="cellgrid"><div class="cell watch"><div class="id">C01</div><div class="main">WATCH</div><div class="meta">adjacent</div></div><div class="cell watch"><div class="id">C02</div><div class="main">WATCH</div><div class="meta">adjacent</div></div><div class="cell watch"><div class="id">C03</div><div class="main">WATCH</div><div class="meta">adjacent</div></div><div class="cell watch"><div class="id">C04</div><div class="main">WATCH</div><div class="meta">adjacent</div></div><div class="cell watch"><div class="id">C05</div><div class="main">WATCH</div><div class="meta">adjacent</div></div><div class="cell watch"><div class="id">C06</div><div class="main">WATCH</div><div class="meta">adjacent</div></div><div class="cell watch"><div class="id">C07</div><div class="main">WATCH</div><div class="meta">adjacent</div></div><div class="cell watch"><div class="id">C08</div><div class="main">WATCH</div><div class="meta">adjacent</div></div><div class="cell keep"><div class="id">C09</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C10</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C11</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C12</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C13</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C14</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C15</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C16</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C17</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C18</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C19</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C20</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C21</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C22</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C23</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C24</div><div class="main">OK</div><div class="meta">retained</div></div></div></div><div class="module"><div class="modulehead"><div class="moduleid">M09</div><div class="moduletag normal">retained</div></div><div class="cellgrid"><div class="cell keep"><div class="id">C01</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C02</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C03</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C04</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C05</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C06</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C07</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C08</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C09</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C10</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C11</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C12</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C13</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C14</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C15</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C16</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C17</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C18</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C19</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C20</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C21</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C22</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C23</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C24</div><div class="main">OK</div><div class="meta">retained</div></div></div></div><div class="module"><div class="modulehead"><div class="moduleid">M10</div><div class="moduletag normal">retained</div></div><div class="cellgrid"><div class="cell keep"><div class="id">C01</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C02</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C03</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C04</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C05</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C06</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C07</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C08</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C09</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C10</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C11</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C12</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C13</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C14</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C15</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C16</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C17</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C18</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C19</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C20</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C21</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C22</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C23</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C24</div><div class="main">OK</div><div class="meta">retained</div></div></div></div><div class="module"><div class="modulehead"><div class="moduleid">M11</div><div class="moduletag normal">retained</div></div><div class="cellgrid"><div class="cell keep"><div class="id">C01</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C02</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C03</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C04</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C05</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C06</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C07</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C08</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C09</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C10</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C11</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C12</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C13</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C14</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C15</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C16</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C17</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C18</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C19</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C20</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C21</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C22</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C23</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C24</div><div class="main">OK</div><div class="meta">retained</div></div></div></div><div class="module"><div class="modulehead"><div class="moduleid">M12</div><div class="moduletag normal">retained</div></div><div class="cellgrid"><div class="cell keep"><div class="id">C01</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C02</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C03</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C04</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C05</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C06</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C07</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C08</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C09</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C10</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C11</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C12</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C13</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C14</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C15</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C16</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C17</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C18</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C19</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C20</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C21</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C22</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C23</div><div class="main">OK</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C24</div><div class="main">OK</div><div class="meta">retained</div></div></div></div>
+      </div>
+    </div>
+
+    <div class="mappanel" id="donor">
+      <div class="maphead">
+        <div>
+          <h4>Donor pack map</h4>
+          <p>All donor cells are shown for the donor modules used in screening. The donor-side impact zone remains visible. Cells inside or adjacent to the donor impact path were excluded before cohort selection. Selected cells and reserve cells are highlighted separately.</p>
+        </div>
+        <div class="legend">
+          <span class="item"><span class="sw donor"></span>Donor impact / excluded</span>
+          <span class="item"><span class="sw selected"></span>Selected</span>
+          <span class="item"><span class="sw reserve"></span>Reserve</span>
+          <span class="item"><span class="sw keep"></span>Available but not selected</span>
+        </div>
+      </div>
+      <div class="packgrid">
+<div class="module"><div class="modulehead"><div class="moduleid">DM03</div><div class="moduletag normal">screened</div></div><div class="cellgrid"><div class="cell keep"><div class="id">C01</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C02</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C03</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C04</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C05</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C06</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C07</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C08</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C09</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C10</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C11</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C12</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C13</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C14</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C15</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C16</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C17</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C18</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C19</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C20</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C21</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C22</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C23</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C24</div><div class="main">OPEN</div><div class="meta">available</div></div></div></div><div class="module"><div class="modulehead"><div class="moduleid">DM04</div><div class="moduletag normal">screened</div></div><div class="cellgrid"><div class="cell keep"><div class="id">C01</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C02</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C03</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C04</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C05</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C06</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C07</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C08</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C09</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C10</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C11</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C12</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C13</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C14</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C15</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C16</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C17</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C18</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C19</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C20</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C21</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C22</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C23</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C24</div><div class="main">OPEN</div><div class="meta">available</div></div></div></div><div class="module"><div class="modulehead"><div class="moduleid">DM05</div><div class="moduletag donor">selected cohort</div></div><div class="cellgrid"><div class="cell keep"><div class="id">C01</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C02</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell reserve"><div class="id">C03</div><div class="main">HOLD</div><div class="meta">reserve</div></div><div class="cell reserve"><div class="id">C04</div><div class="main">HOLD</div><div class="meta">reserve</div></div><div class="cell reserve"><div class="id">C05</div><div class="main">HOLD</div><div class="meta">reserve</div></div><div class="cell reserve"><div class="id">C06</div><div class="main">HOLD</div><div class="meta">reserve</div></div><div class="cell keep"><div class="id">C07</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C08</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell selected"><div class="id">C09</div><div class="main">PICK</div><div class="meta">selected</div></div><div class="cell selected"><div class="id">C10</div><div class="main">PICK</div><div class="meta">selected</div></div><div class="cell selected"><div class="id">C11</div><div class="main">PICK</div><div class="meta">selected</div></div><div class="cell selected"><div class="id">C12</div><div class="main">PICK</div><div class="meta">selected</div></div><div class="cell selected"><div class="id">C13</div><div class="main">PICK</div><div class="meta">selected</div></div><div class="cell selected"><div class="id">C14</div><div class="main">PICK</div><div class="meta">selected</div></div><div class="cell selected"><div class="id">C15</div><div class="main">PICK</div><div class="meta">selected</div></div><div class="cell selected"><div class="id">C16</div><div class="main">PICK</div><div class="meta">selected</div></div><div class="cell keep"><div class="id">C17</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C18</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C19</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C20</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C21</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C22</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C23</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C24</div><div class="main">OPEN</div><div class="meta">available</div></div></div></div><div class="module"><div class="modulehead"><div class="moduleid">DM06</div><div class="moduletag normal">screened</div></div><div class="cellgrid"><div class="cell keep"><div class="id">C01</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C02</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C03</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C04</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C05</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C06</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C07</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C08</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C09</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C10</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C11</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C12</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C13</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C14</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C15</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C16</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C17</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C18</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C19</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C20</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C21</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C22</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C23</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C24</div><div class="main">OPEN</div><div class="meta">available</div></div></div></div><div class="module"><div class="modulehead"><div class="moduleid">DM07</div><div class="moduletag watch">donor impact</div></div><div class="cellgrid"><div class="cell keep"><div class="id">C01</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C02</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C03</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C04</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C05</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C06</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C07</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C08</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell donorhit"><div class="id">C09</div><div class="main">EXCL</div><div class="meta">impact</div></div><div class="cell donorhit"><div class="id">C10</div><div class="main">EXCL</div><div class="meta">impact</div></div><div class="cell donorhit"><div class="id">C11</div><div class="main">EXCL</div><div class="meta">impact</div></div><div class="cell donorhit"><div class="id">C12</div><div class="main">EXCL</div><div class="meta">impact</div></div><div class="cell donorhit"><div class="id">C13</div><div class="main">EXCL</div><div class="meta">impact</div></div><div class="cell donorhit"><div class="id">C14</div><div class="main">EXCL</div><div class="meta">impact</div></div><div class="cell donorhit"><div class="id">C15</div><div class="main">EXCL</div><div class="meta">impact</div></div><div class="cell donorhit"><div class="id">C16</div><div class="main">EXCL</div><div class="meta">impact</div></div><div class="cell keep"><div class="id">C17</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C18</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C19</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C20</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C21</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C22</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C23</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C24</div><div class="main">OPEN</div><div class="meta">available</div></div></div></div><div class="module"><div class="modulehead"><div class="moduleid">DM08</div><div class="moduletag watch">donor impact</div></div><div class="cellgrid"><div class="cell donorhit"><div class="id">C01</div><div class="main">EXCL</div><div class="meta">impact</div></div><div class="cell donorhit"><div class="id">C02</div><div class="main">EXCL</div><div class="meta">impact</div></div><div class="cell donorhit"><div class="id">C03</div><div class="main">EXCL</div><div class="meta">impact</div></div><div class="cell donorhit"><div class="id">C04</div><div class="main">EXCL</div><div class="meta">impact</div></div><div class="cell donorhit"><div class="id">C05</div><div class="main">EXCL</div><div class="meta">impact</div></div><div class="cell donorhit"><div class="id">C06</div><div class="main">EXCL</div><div class="meta">impact</div></div><div class="cell donorhit"><div class="id">C07</div><div class="main">EXCL</div><div class="meta">impact</div></div><div class="cell donorhit"><div class="id">C08</div><div class="main">EXCL</div><div class="meta">impact</div></div><div class="cell keep"><div class="id">C09</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C10</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C11</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C12</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C13</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C14</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C15</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C16</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C17</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C18</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C19</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C20</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C21</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C22</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C23</div><div class="main">OPEN</div><div class="meta">available</div></div><div class="cell keep"><div class="id">C24</div><div class="main">OPEN</div><div class="meta">available</div></div></div></div>
+      </div>
+    </div>
+
+    <div class="mappanel" id="selected">
+      <div class="maphead">
+        <div>
+          <h4>Selected installation map</h4>
+          <p>This view connects donor source cells to their final recipient install coordinates. The customer can see exactly which donor cells were selected, which reserve cells were held, and where each selected cell will be placed inside the recipient module.</p>
+        </div>
+        <div class="legend">
+          <span class="item"><span class="sw selected"></span>Selected install cells</span>
+          <span class="item"><span class="sw reserve"></span>Reserve cells held</span>
+          <span class="item"><span class="sw keep"></span>Recipient retained</span>
+        </div>
+      </div>
+      <div class="packgrid">
+<div class="module"><div class="modulehead"><div class="moduleid">Recipient M07</div><div class="moduletag replace">install zone</div></div><div class="cellgrid"><div class="cell keep"><div class="id">C01</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C02</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C03</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C04</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C05</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C06</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C07</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C08</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C09</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C10</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell selected"><div class="id">C11</div><div class="main">IN</div><div class="meta">from C09</div></div><div class="cell selected"><div class="id">C12</div><div class="main">IN</div><div class="meta">from C10</div></div><div class="cell selected"><div class="id">C13</div><div class="main">IN</div><div class="meta">from C11</div></div><div class="cell selected"><div class="id">C14</div><div class="main">IN</div><div class="meta">from C12</div></div><div class="cell selected"><div class="id">C15</div><div class="main">IN</div><div class="meta">from C13</div></div><div class="cell selected"><div class="id">C16</div><div class="main">IN</div><div class="meta">from C14</div></div><div class="cell selected"><div class="id">C17</div><div class="main">IN</div><div class="meta">from C15</div></div><div class="cell selected"><div class="id">C18</div><div class="main">IN</div><div class="meta">from C16</div></div><div class="cell keep"><div class="id">C19</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C20</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C21</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C22</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C23</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C24</div><div class="main">KEEP</div><div class="meta">retained</div></div></div></div><div class="module"><div class="modulehead"><div class="moduleid">Donor M05</div><div class="moduletag donor">source cells</div></div><div class="cellgrid"><div class="cell keep"><div class="id">C01</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C02</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C03</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C04</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C05</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C06</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C07</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C08</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell selected"><div class="id">C09</div><div class="main">SRC</div><div class="meta">to C11</div></div><div class="cell selected"><div class="id">C10</div><div class="main">SRC</div><div class="meta">to C12</div></div><div class="cell selected"><div class="id">C11</div><div class="main">SRC</div><div class="meta">to C13</div></div><div class="cell selected"><div class="id">C12</div><div class="main">SRC</div><div class="meta">to C14</div></div><div class="cell selected"><div class="id">C13</div><div class="main">SRC</div><div class="meta">to C15</div></div><div class="cell selected"><div class="id">C14</div><div class="main">SRC</div><div class="meta">to C16</div></div><div class="cell selected"><div class="id">C15</div><div class="main">SRC</div><div class="meta">to C17</div></div><div class="cell selected"><div class="id">C16</div><div class="main">SRC</div><div class="meta">to C18</div></div><div class="cell keep"><div class="id">C17</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C18</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C19</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C20</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C21</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C22</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C23</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C24</div><div class="main">KEEP</div><div class="meta">retained</div></div></div></div><div class="module"><div class="modulehead"><div class="moduleid">Reserve M05</div><div class="moduletag normal">reserve cells</div></div><div class="cellgrid"><div class="cell keep"><div class="id">C01</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C02</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell reserve"><div class="id">C03</div><div class="main">HOLD</div><div class="meta">reserve</div></div><div class="cell reserve"><div class="id">C04</div><div class="main">HOLD</div><div class="meta">reserve</div></div><div class="cell reserve"><div class="id">C05</div><div class="main">HOLD</div><div class="meta">reserve</div></div><div class="cell reserve"><div class="id">C06</div><div class="main">HOLD</div><div class="meta">reserve</div></div><div class="cell keep"><div class="id">C07</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C08</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C09</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C10</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C11</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C12</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C13</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C14</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C15</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C16</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C17</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C18</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C19</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C20</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C21</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C22</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C23</div><div class="main">KEEP</div><div class="meta">retained</div></div><div class="cell keep"><div class="id">C24</div><div class="main">KEEP</div><div class="meta">retained</div></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="panel section">
+      <h3>Trace record</h3>
+      <div class="sub">Every installed cell, reserve cell, donor exclusion, and install coordinate is tied to the passport record below.</div>
+      <div class="table">
+        <table>
+          <thead><tr><th>Record</th><th>Value</th><th>Why it matters</th></tr></thead>
+          <tbody>
+            <tr><td>Recipient install zone</td><td>M07 · C11–C18</td><td>Locks the protection term to the exact installed BATReX cells.</td></tr>
+            <tr><td>Selected donor source cells</td><td>DM05 · C09–C16</td><td>Shows exactly which donor cells were chosen.</td></tr>
+            <tr><td>Reserve donor cells</td><td>DM05 · C03–C06</td><td>Maintains same-cohort continuity for later service if needed.</td></tr>
+            <tr><td>Excluded donor impact cells</td><td>DM07 · C09–C16 and DM08 · C01–C08</td><td>Makes donor-side damage visible instead of hiding it.</td></tr>
+            <tr><td>Protection trigger</td><td>Verified failure originating inside the installed BATReX cohort</td><td>Defines when installed-cell protection responds.</td></tr>
+            <tr><td>Reinstall allowance</td><td>Included after BATReX confirmation of covered origin</td><td>Turns the passport from a data sheet into a repair product.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel section">
+      <h3>Customer decision summary</h3>
+      <div class="sub">What the customer is buying is not an unknown used cell. It is a documented, donor-screened, impact-excluded, install-locked, insurer-linked repair cohort with active installed-cell protection.</div>
+      <div class="cards" style="grid-template-columns:1fr; margin-top:16px">
+        <div class="card">
+          <div class="t">What is covered</div>
+          <div class="v">Installed BATReX cohort</div>
+          <div class="s">Covered origin is limited to the BATReX-installed cells at the approved install coordinates and the resulting pack imbalance or thermal event attributable to that installed cohort.</div>
+        </div>
+        <div class="card">
+          <div class="t">Why this is credible</div>
+          <div class="v">Damage never hidden</div>
+          <div class="s">The recipient damage path stays visible. The donor impact path stays visible. Selected donor cells are shown separately from excluded donor cells. Reserve cells are held from the same matched cohort.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+const tabs = document.querySelectorAll('.tab');
+const panels = document.querySelectorAll('.mappanel');
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(x => x.classList.remove('active'));
+    panels.forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    const target = document.getElementById(tab.dataset.tab);
+    if (target) target.classList.add('active');
+  });
+});
+
+const optionData = {
+  'Option A': {
+    score: 96,
+    compatibility: '96 / 100',
+    compatibilitySub: 'Lowest variance',
+    coverage: '24 mo / 24k mi',
+    coverageSub: 'BATReX installed-cell protection',
+    price: '$1,980',
+    priceSub: 'Post-install verification included',
+    selectedLabel: 'Max reliability',
+    selectedDesc: 'Longest term with the tightest resistance spread.',
+    donorPack: '2015 Model S 85',
+    donorPackDesc: '61,380 mi · lower aging risk',
+    donorMileage: '61,380 mi',
+    releaseSub: 'Highest-fit cohort selected for module M07 with the lowest predicted rebalance variance and the longest protection window.',
+    passportTitle: 'Selected option passport · Option A',
+    passportCoverage: '24 months / 24,000 mi'
+  },
+  'Option B': {
+    score: 94,
+    compatibility: '94 / 100',
+    compatibilitySub: 'Lowest pack-balance risk',
+    coverage: '18 mo / 18k mi',
+    coverageSub: 'BATReX installed-cell protection',
+    price: '$1,620',
+    priceSub: 'Post-install verification included',
+    selectedLabel: 'Balanced value',
+    selectedDesc: 'Strong fit with insurer-friendly price point',
+    donorPack: '2015 Model S 85',
+    donorPackDesc: '72,410 mi · salvage fleet release',
+    donorMileage: '72,410 mi',
+    releaseSub: 'Recipient pack balance window, donor impact exclusion, donor traceability, and installed-cell protection terms all passed. This cohort is cleared for the exact target cells inside module M07.',
+    passportTitle: 'Selected option passport · Option B',
+    passportCoverage: '18 months / 18,000 mi'
+  },
+  'Option C': {
+    score: 89,
+    compatibility: '89 / 100',
+    compatibilitySub: 'Wider resistance window',
+    coverage: '12 mo / 12k mi',
+    coverageSub: 'BATReX installed-cell protection',
+    price: '$1,290',
+    priceSub: 'Post-install verification included',
+    selectedLabel: 'Lowest upfront cost',
+    selectedDesc: 'Lower entry price with a shorter protection term.',
+    donorPack: '2015 Model S 85',
+    donorPackDesc: '96,880 mi · higher aging risk',
+    donorMileage: '96,880 mi',
+    releaseSub: 'Lower-cost cohort cleared for module M07 with a wider resistance spread and a shorter protection window.',
+    passportTitle: 'Selected option passport · Option C',
+    passportCoverage: '12 months / 12,000 mi'
+  }
+};
+
+function setRingScore(score) {
+  const ring = document.querySelector('.ring');
+  const ringBig = document.querySelector('.ringin .big');
+  const deg = Math.max(0, Math.min(100, score)) * 3.6;
+  if (ring) {
+    ring.style.background = `conic-gradient(#2bc877 0deg,#2bc877 ${deg}deg,rgba(255,255,255,.14) ${deg}deg)`;
+  }
+  if (ringBig) ringBig.textContent = String(score);
+}
+
+function findCardByTitle(titleText) {
+  return Array.from(document.querySelectorAll('.card')).find(card => {
+    const title = card.querySelector('.t');
+    return title && title.textContent.trim() === titleText;
+  });
+}
+
+function updateOption(optionName) {
+  const data = optionData[optionName];
+  if (!data) return;
+
+  document.querySelectorAll('.option').forEach(option => {
+    const name = option.querySelector('.name')?.textContent.trim();
+    const button = option.querySelector('.btn');
+    const selected = name === optionName;
+    option.classList.toggle('active', selected);
+    if (button) {
+      button.classList.toggle('primary', selected);
+      button.textContent = selected ? 'Selected' : `Select ${name}`;
+      button.setAttribute('aria-pressed', selected ? 'true' : 'false');
+      button.setAttribute('type', 'button');
+    }
+  });
+
+  const heroMetrics = document.querySelectorAll('.hero .metric');
+  if (heroMetrics[2]) {
+    heroMetrics[2].querySelector('.v').textContent = data.compatibility;
+    heroMetrics[2].querySelector('.s').textContent = data.compatibilitySub;
+  }
+  if (heroMetrics[3]) {
+    heroMetrics[3].querySelector('.v').textContent = data.coverage;
+    heroMetrics[3].querySelector('.s').textContent = data.coverageSub;
+  }
+  if (heroMetrics[4]) {
+    heroMetrics[4].querySelector('.v').textContent = data.price;
+    heroMetrics[4].querySelector('.s').textContent = data.priceSub;
+  }
+
+  setRingScore(data.score);
+
+  const releaseSub = document.querySelector('.releasesub');
+  if (releaseSub) releaseSub.textContent = data.releaseSub;
+
+  const sidecards = document.querySelectorAll('.sidebar .sidecard');
+  if (sidecards[0]) {
+    sidecards[0].querySelector('.v').textContent = data.selectedLabel;
+    sidecards[0].querySelector('.s').textContent = data.selectedDesc;
+  }
+  if (sidecards[1]) {
+    sidecards[1].querySelector('.v').textContent = data.donorPack;
+    sidecards[1].querySelector('.s').textContent = data.donorPackDesc;
+  }
+
+  const passportTitle = document.querySelector('.passport h3');
+  if (passportTitle) passportTitle.textContent = data.passportTitle;
+
+  const coverageStat = Array.from(document.querySelectorAll('.passport .stat')).find(stat => {
+    const key = stat.querySelector('.k');
+    return key && /^Coverage (tier|package)$/.test(key.textContent.trim());
+  });
+  if (coverageStat) {
+    coverageStat.querySelector('.k').textContent = 'Coverage package';
+    coverageStat.querySelector('.v').textContent = data.coverage;
+    coverageStat.querySelector('.s').textContent = 'Installed-cell protection';
+  }
+
+  const donorCard = findCardByTitle('Donor source provenance');
+  if (donorCard) {
+    const detail = donorCard.querySelector('.s');
+    if (detail) {
+      detail.innerHTML = detail.innerHTML.replace(/Donor mileage · .*?<br>/, `Donor mileage · ${data.donorMileage}<br>`);
+    }
+  }
+}
+
+document.querySelectorAll('.option .btn').forEach(button => {
+  button.setAttribute('type', 'button');
+  button.addEventListener('click', () => {
+    const option = button.closest('.option');
+    const optionName = option?.querySelector('.name')?.textContent.trim();
+    if (optionName) updateOption(optionName);
+  });
+});
+
+const activeOptionName = document.querySelector('.option.active .name')?.textContent.trim() || 'Option B';
+updateOption(activeOptionName);
+</script>
+
+</body>
+</html>
